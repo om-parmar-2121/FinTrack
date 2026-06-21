@@ -53,7 +53,12 @@ export const signup = asyncHandler(async (
     otp_expires_at: new Date(Date.now() + 5 * 60 * 1000),
   });
 
-  await sendEmail(user.email, "Verify your email - FinTrack", "Your OTP code is: " + otpCode, html);
+  try {
+    await sendEmail(user.email, "Verify your email - FinTrack", "Your OTP code is: " + otpCode, html);
+  } catch (err) {
+    console.error("Signup email delivery failed:", err);
+    return next(new errorHandler("Failed to send verification email. Please try again later.", 500));
+  }
 
   res.status(201).clearCookie("token", cookieOptions).json({
     success: true,
@@ -93,7 +98,12 @@ export const login = asyncHandler(async (
     otp_expires_at: new Date(Date.now() + 5 * 60 * 1000), // 5 minutes validity
   });
 
-  await sendEmail(user.email, "Verify your email - FinTrack", "Your OTP code is: " + otpCode, html);
+  try {
+    await sendEmail(user.email, "Verify your email - FinTrack", "Your OTP code is: " + otpCode, html);
+  } catch (err) {
+    console.error("Login email delivery failed:", err);
+    return next(new errorHandler("Failed to send verification email. Please try again later.", 500));
+  }
 
   res.status(200).clearCookie("token", cookieOptions).json({
     success: true,

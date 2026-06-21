@@ -73,7 +73,8 @@ export const OtpVerification: FC<OtpVerificationProps> = ({
         onSuccess();
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Invalid or expired OTP");
+      console.error("OTP verification error details:", err);
+      setError(err.response?.data?.message || "Unable to connect to the server. Please try again later.");
     } finally {
       setIsLoading(false);
     }
@@ -91,7 +92,8 @@ export const OtpVerification: FC<OtpVerificationProps> = ({
       }, 100);
       alert("A new OTP code has been sent to your email.");
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to resend OTP");
+      console.error("OTP resend error details:", err);
+      setError(err.response?.data?.message || "Unable to connect to the server. Please try again later.");
     } finally {
       setIsLoading(false);
     }

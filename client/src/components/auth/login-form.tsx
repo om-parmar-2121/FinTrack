@@ -54,7 +54,8 @@ export const LoginForm: FC<LoginFormProps> = ({ className, ...props }) => {
         navigate("/dashboard");
       }
     } catch (err: any) {
-      setError(err.response?.data?.message || "Failed to login. Please check your credentials.");
+      console.error("Login error details:", err);
+      setError(err.response?.data?.message || "Unable to connect to the server. Please try again later.");
     } finally {
       setIsLoading(false);
     }
