@@ -26,20 +26,22 @@ if (!config.JWT_SECRET) {
   throw new Error("JWT_SECRET missing in .env");
 }
 
-if (!config.GOOGLE_CLIENT_ID) {
-  throw new Error("GOOGLE_CLIENT_ID missing in .env");
-}
+if (!process.env.RESEND_API_KEY) {
+  if (!config.GOOGLE_CLIENT_ID) {
+    throw new Error("GOOGLE_CLIENT_ID missing in .env (or provide RESEND_API_KEY for Resend API fallback)");
+  }
 
-if (!config.GOOGLE_CLIENT_SECRET) {
-  throw new Error("GOOGLE_CLIENT_SECRET missing in .env");
-}
+  if (!config.GOOGLE_CLIENT_SECRET) {
+    throw new Error("GOOGLE_CLIENT_SECRET missing in .env");
+  }
 
-if (!config.GOOGLE_REFRESH_TOKEN) {
-  throw new Error("GOOGLE_REFRESH_TOKEN missing in .env");
-}
+  if (!config.GOOGLE_REFRESH_TOKEN) {
+    throw new Error("GOOGLE_REFRESH_TOKEN missing in .env");
+  }
 
-if (!config.GOOGLE_USER) {
-  throw new Error("GOOGLE_USER missing in .env");
+  if (!config.GOOGLE_USER) {
+    throw new Error("GOOGLE_USER missing in .env");
+  }
 }
 
 export default config;
