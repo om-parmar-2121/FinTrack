@@ -181,3 +181,13 @@ input[type="number"] {
   scrollbar-width: thin;
   scrollbar-color: #262626 #0b0b0b;
 }
+
+::selection {
+  background-color: #e5e7eb;
+  color: black;
+}
+
+::-moz-selection {
+  background-color: #e5e7eb;
+  color: black;
+}
