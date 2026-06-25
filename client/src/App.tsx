@@ -12,6 +12,7 @@ const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Analytics = lazy(() => import("./pages/Analytics"));
 const Transactions = lazy(() => import("./pages/Transactions"));
 const Debts = lazy(() => import("./pages/Debts"));
+const Setup = lazy(() => import("./pages/Setup"));
 
 // Protect dashboard pages from unauthenticated access
 const ProtectedRoute = ({ children, isAuthenticated }: { children: React.ReactNode; isAuthenticated: boolean }) => {
@@ -50,7 +51,12 @@ const App: FC = () => {
           
           if (res.success) {
             if (location.pathname === "/" || location.pathname === "/signup") {
-              navigate("/dashboard");
+              // Check if new Google user hasn't set budget/goal yet
+              const userData = res.data?.user;
+              const needsSetup = userData &&
+                (userData.monthlyBudget === 0 || userData.monthlyBudget == null) &&
+                (userData.savingGoal === 0 || userData.savingGoal == null);
+              navigate(needsSetup ? "/setup" : "/dashboard");
             }
           }
         } catch (err) {
@@ -119,6 +125,13 @@ const App: FC = () => {
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/debts" element={<Debts />} />
         </Route>
+
+        {/* Google users setup route — protected but outside AppShell */}
+        <Route path="/setup" element={
+          <ProtectedRoute isAuthenticated={isLocalAuthenticated === true}>
+            <Setup />
+          </ProtectedRoute>
+        } />
       </Routes>
     </Suspense>
   );
