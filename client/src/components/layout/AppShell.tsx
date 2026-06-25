@@ -127,6 +127,25 @@ const AppShell: FC = () => {
                   </NavLink>
                 );
               })}
+
+              <div className="h-px bg-white/10 my-2" />
+
+              <button
+                type="button"
+                onClick={async () => {
+                  setMobileOpen(false);
+                  try {
+                    await authService.logout();
+                  } catch (err) {
+                    console.error("Local session logout failed:", err);
+                  }
+                  auth0Logout({ logoutParams: { returnTo: window.location.origin } });
+                }}
+                className="w-full flex items-center gap-3 rounded-2xl border border-transparent bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 hover:border-rose-500/20 px-4 py-3 text-sm font-medium transition-colors cursor-pointer"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </button>
             </nav>
           </div>
         ) : null}
