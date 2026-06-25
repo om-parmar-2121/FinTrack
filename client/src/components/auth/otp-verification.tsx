@@ -264,7 +264,7 @@ export const OtpVerification: FC<OtpVerificationProps> = ({
   // variant === "login"
   return (
     <div className={cn("flex flex-col gap-2 w-full", className)} {...props}>
-      <div className="bg-[#111111]/95 backdrop-blur-xl border border-[#262626] text-white shadow-2xl rounded-2xl sm:p-7 space-y-4">
+      <div className="bg-[#111111]/95 backdrop-blur-xl border border-[#262626] text-white shadow-2xl rounded-2xl p-5 sm:p-7 space-y-4">
         <div className="space-y-2 text-center lg:text-left">
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight">
             Verify your email
