@@ -24,6 +24,10 @@ app.use("/transactions", transactionRoutes);
 app.use("/analytics", analyticsRoutes);
 app.use("/debts", debtRoutes);
 
+app.get("/ping", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.use(errorMiddleware);
 
 export default app;

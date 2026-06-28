@@ -4,6 +4,7 @@ import { Route, Routes, useNavigate, useLocation, Navigate } from "react-router-
 import AppShell from "./components/layout/AppShell";
 import { useAuth0 } from "@auth0/auth0-react";
 import authService from "./services/auth.service";
+import api from "./lib/api";
 import NotFound from "./components/NotFound";
 
 const Login = lazy(() => import("./pages/Login"));
@@ -14,7 +15,6 @@ const Transactions = lazy(() => import("./pages/Transactions"));
 const Debts = lazy(() => import("./pages/Debts"));
 const Setup = lazy(() => import("./pages/Setup"));
 
-// Protect dashboard pages from unauthenticated access
 const ProtectedRoute = ({ children, isAuthenticated }: { children: React.ReactNode; isAuthenticated: boolean }) => {
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
@@ -22,7 +22,6 @@ const ProtectedRoute = ({ children, isAuthenticated }: { children: React.ReactNo
   return <>{children}</>;
 };
 
-// Prevent authenticated users from visiting login/signup
 const PublicRoute = ({ children, isAuthenticated }: { children: React.ReactNode; isAuthenticated: boolean }) => {
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
@@ -37,7 +36,7 @@ const App: FC = () => {
   const [isSyncing, setIsSyncing] = useState(false);
   const [isLocalAuthenticated, setIsLocalAuthenticated] = useState<boolean | null>(null);
 
-  // Sync Auth0 with backend
+  // Sync Auth0 Google login with backend
   useEffect(() => {
     const syncAuth0User = async () => {
       if (isAuthenticated && user) {
@@ -70,7 +69,14 @@ const App: FC = () => {
     syncAuth0User();
   }, [isAuthenticated, user, navigate, location.pathname]);
 
-  // Check auth session state on mount / navigation
+  // Keep Render free version so pinging every 10 min
+  useEffect(() => {
+    const ping = () => api.get("/ping").catch(() => {});
+    ping();
+    const interval = setInterval(ping, 10 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   useEffect(() => {
     const checkAuth = async () => {
       try {
@@ -126,7 +132,6 @@ const App: FC = () => {
           <Route path="/debts" element={<Debts />} />
         </Route>
 
-        {/* Google users setup route — protected but outside AppShell */}
         <Route path="/setup" element={
           <ProtectedRoute isAuthenticated={isLocalAuthenticated === true}>
             <Setup />
