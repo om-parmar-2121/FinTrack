@@ -12,10 +12,10 @@ const config = {
   CLIENT_URL: normalizeOrigin(
     process.env.CLIENT_URL || "http://localhost:5173",
   ),
-  // Mailjet credentials for OTP email delivery
-  MAILJET_API_KEY: process.env.MAILJET_API_KEY,
-  MAILJET_SECRET_KEY: process.env.MAILJET_SECRET_KEY,
-  MAILJET_SENDER_EMAIL: process.env.MAILJET_SENDER_EMAIL,
+  GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
+  GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  GOOGLE_REFRESH_TOKEN: process.env.GOOGLE_REFRESH_TOKEN,
+  GOOGLE_USER: process.env.GOOGLE_USER,
 };
 
 if (!config.MONGODB_URL) {
@@ -26,16 +26,20 @@ if (!config.JWT_SECRET) {
   throw new Error("JWT_SECRET missing in .env");
 }
 
-if (!config.MAILJET_API_KEY) {
-  throw new Error("MAILJET_API_KEY missing in .env");
+if (!config.GOOGLE_CLIENT_ID) {
+  throw new Error("GOOGLE_CLIENT_ID missing in .env");
 }
 
-if (!config.MAILJET_SECRET_KEY) {
-  throw new Error("MAILJET_SECRET_KEY missing in .env");
+if (!config.GOOGLE_CLIENT_SECRET) {
+  throw new Error("GOOGLE_CLIENT_SECRET missing in .env");
 }
 
-if (!config.MAILJET_SENDER_EMAIL) {
-  throw new Error("MAILJET_SENDER_EMAIL missing in .env");
+if (!config.GOOGLE_REFRESH_TOKEN) {
+  throw new Error("GOOGLE_REFRESH_TOKEN missing in .env");
+}
+
+if (!config.GOOGLE_USER) {
+  throw new Error("GOOGLE_USER missing in .env");
 }
 
 export default config;

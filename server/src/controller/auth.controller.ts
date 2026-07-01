@@ -5,10 +5,10 @@ import generateToken from "../utils/generateToken.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { errorHandler } from "../utils/errorHandler.utils.js";
 import { Request, Response, NextFunction, CookieOptions } from "express";
-import { sendEmail } from "../services/email.service.js";
+import crypto from "crypto";
 import otpModel from "../models/otp.model.js";
 import { generateOTP, getOtpHtml } from "../utils/utils.js";
-import crypto from "crypto";
+import { sendEmail } from "../services/email.service.js";
 
 const cookieOptions: CookieOptions = {
   httpOnly: true,
@@ -40,7 +40,6 @@ export const signup = asyncHandler(async (
 
   const otpCode = generateOTP();
   const html = getOtpHtml(otpCode);
-
   const otpHash = crypto.createHash("sha256").update(otpCode).digest("hex");
 
   // Clean up any older OTPs for this email first

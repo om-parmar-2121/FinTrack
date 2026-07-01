@@ -1,48 +1,65 @@
 import axios from "axios";
 import config from "../config/config.js";
 
+interface TokenResponse {
+  access_token: string;
+  expires_in: number;
+  scope: string;
+  token_type: string;
+}
+
 export const sendEmail = async (
   to: string,
   subject: string,
   text: string,
   html: string
 ): Promise<void> => {
-  const credentials = Buffer.from(
-    `${config.MAILJET_API_KEY}:${config.MAILJET_SECRET_KEY}`
-  ).toString("base64");
-
   try {
-    await axios.post(
-      "https://api.mailjet.com/v3.1/send",
+    const tokenResponse = await axios.post<TokenResponse>(
+      "https://oauth2.googleapis.com/token",
       {
-        Messages: [
-          {
-            From: {
-              Email: config.MAILJET_SENDER_EMAIL,
-              Name: "FinTrack",
-            },
-            To: [{ Email: to }],
-            Subject: subject,
-            TextPart: text,
-            HTMLPart: html,
-          },
-        ],
-      },
+        client_id: config.GOOGLE_CLIENT_ID,
+        client_secret: config.GOOGLE_CLIENT_SECRET,
+        refresh_token: config.GOOGLE_REFRESH_TOKEN,
+        grant_type: "refresh_token",
+      }
+    );
+
+    const accessToken = tokenResponse.data.access_token;
+
+    const utf8Subject = `=?utf-8?B?${Buffer.from(subject).toString("base64")}?=`;
+    const messageParts = [
+      `From: FinTrack <${config.GOOGLE_USER}>`,
+      `To: ${to}`,
+      `Content-Type: text/html; charset=utf-8`,
+      `MIME-Version: 1.0`,
+      `Subject: ${utf8Subject}`,
+      ``,
+      html
+    ];
+    const message = messageParts.join("\r\n");
+
+    const raw = Buffer.from(message)
+      .toString("base64")
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/, "");
+
+    await axios.post(
+      "https://gmail.googleapis.com/gmail/v1/users/me/messages/send",
+      { raw },
       {
         headers: {
-          Authorization: `Basic ${credentials}`,
+          Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-    console.log(`[Mailjet] Email sent to: ${to}`);
+    console.log(`[Gmail API] Email sent to: ${to}`);
   } catch (error: any) {
-    const detail =
-      error.response?.data?.ErrorMessage ||
-      error.response?.data?.Messages?.[0]?.Errors?.[0]?.ErrorMessage ||
-      error.message;
-    console.error(`[Mailjet] Failed to send email to ${to}:`, detail);
+    const detail = error.response?.data?.error?.message || error.message;
+    console.error(`[Gmail API] Failed to send email to ${to}:`, detail);
     throw new Error(`Email delivery failed: ${detail}`);
   }
 };
