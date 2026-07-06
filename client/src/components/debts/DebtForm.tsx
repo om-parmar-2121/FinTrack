@@ -6,12 +6,15 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Calendar, User, AlertCircle } from "lucide-react";
 import debtService from "../../services/debt.service";
+import { useSetRecoilState } from "recoil";
+import { debtsState } from "../../recoil/atoms";
 
 interface DebtFormProps {
   onSuccess?: () => void;
 }
 
 export const DebtForm: FC<DebtFormProps> = ({ onSuccess }) => {
+  const setDebts = useSetRecoilState(debtsState);
   const todayStr = (() => {
     const d = new Date();
     const year = d.getFullYear();
@@ -56,13 +59,17 @@ export const DebtForm: FC<DebtFormProps> = ({ onSuccess }) => {
 
     setIsSubmitting(true);
     try {
-      await debtService.addDebt({
+      const res = await debtService.addDebt({
         person,
         type,
         amount: parsedAmount,
         dueDate: new Date(dueDate).toISOString(),
         note,
       });
+
+      if (res.success && res.data) {
+        setDebts((prev) => [res.data, ...prev]);
+      }
 
       // Reset form
       setPerson("");

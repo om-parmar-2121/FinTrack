@@ -6,12 +6,15 @@ import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 import { Calendar, ChevronDown, AlertCircle } from "lucide-react";
 import transactionService from "../../services/transaction.service";
+import { useSetRecoilState } from "recoil";
+import { transactionsState } from "../../recoil/atoms";
 
 interface TransactionFormProps {
   onSuccess?: () => void;
 }
 
 export const TransactionForm: FC<TransactionFormProps> = ({ onSuccess }) => {
+  const setTransactions = useSetRecoilState(transactionsState);
 
   // Local component state for form fields
   const [type, setType] = useState<"income" | "expense">("expense");
@@ -43,13 +46,17 @@ export const TransactionForm: FC<TransactionFormProps> = ({ onSuccess }) => {
 
     setIsSubmitting(true);
     try {
-      await transactionService.addTransaction({
+      const res = await transactionService.addTransaction({
         type,
         amount: parsedAmount,
         category: type === "expense" ? category : "salary",
         date: new Date(date).toISOString(),
         note,
       });
+
+      if (res.success && res.data) {
+        setTransactions((prev) => [res.data, ...prev]);
+      }
 
       // Reset inputs
       setAmount("");

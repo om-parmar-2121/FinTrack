@@ -55,21 +55,33 @@ const TextType: React.FC<TextTypeProps> = ({
   const cursorRef = useRef<HTMLSpanElement | null>(null);
   const containerRef = useRef<HTMLElement | null>(null);
 
-  const textArray = useMemo(() => (Array.isArray(text) ? text : [text]), [text]);
+  const onSentenceCompleteRef = useRef(onSentenceComplete);
+  useEffect(() => {
+    onSentenceCompleteRef.current = onSentenceComplete;
+  }, [onSentenceComplete]);
+
+  const textString = useMemo(() => (Array.isArray(text) ? text.join("|||") : text), [text]);
+  const textArray = useMemo(() => (Array.isArray(text) ? text : [text]), [textString]);
 
   const longestText = useMemo(() => {
     return textArray.reduce((a, b) => (a.length >= b.length ? a : b), '');
   }, [textArray]);
 
+  const variableSpeedStr = variableSpeed ? `${variableSpeed.min},${variableSpeed.max}` : "";
+  const stableVariableSpeed = useMemo(() => variableSpeed, [variableSpeedStr]);
+
   const getRandomSpeed = useCallback(() => {
-    if (!variableSpeed) return typingSpeed;
-    const { min, max } = variableSpeed;
+    if (!stableVariableSpeed) return typingSpeed;
+    const { min, max } = stableVariableSpeed;
     return Math.random() * (max - min) + min;
-  }, [variableSpeed, typingSpeed]);
+  }, [stableVariableSpeed, typingSpeed]);
+
+  const textColorsStr = textColors.join(",");
+  const stableTextColors = useMemo(() => textColors, [textColorsStr]);
 
   const getCurrentTextColor = () => {
-    if (textColors.length === 0) return 'inherit';
-    return textColors[currentTextIndex % textColors.length];
+    if (stableTextColors.length === 0) return 'inherit';
+    return stableTextColors[currentTextIndex % stableTextColors.length];
   };
 
   useEffect(() => {
@@ -119,8 +131,8 @@ const TextType: React.FC<TextTypeProps> = ({
             return;
           }
 
-          if (onSentenceComplete) {
-            onSentenceComplete(textArray[currentTextIndex], currentTextIndex);
+          if (onSentenceCompleteRef.current) {
+            onSentenceCompleteRef.current(textArray[currentTextIndex], currentTextIndex);
           }
 
           setCurrentTextIndex((prev) => (prev + 1) % textArray.length);
@@ -138,7 +150,7 @@ const TextType: React.FC<TextTypeProps> = ({
               setDisplayedText((prev) => prev + processedText[currentCharIndex]);
               setCurrentCharIndex((prev) => prev + 1);
             },
-            variableSpeed ? getRandomSpeed() : typingSpeed
+            stableVariableSpeed ? getRandomSpeed() : typingSpeed
           );
         } else if (textArray.length >= 1) {
           if (!loop && currentTextIndex === textArray.length - 1) return;
@@ -172,8 +184,7 @@ const TextType: React.FC<TextTypeProps> = ({
     initialDelay,
     isVisible,
     reverseMode,
-    variableSpeed,
-    onSentenceComplete,
+    stableVariableSpeed,
   ]);
 
   const shouldHideCursor =

@@ -6,6 +6,8 @@ import { Trash2, CircleDollarSign, Coffee, Car, Receipt, ShoppingBag, HelpCircle
 import type { TransactionItem } from "./types";
 import { Skeleton } from "../ui/skeleton";
 import transactionService from "../../services/transaction.service";
+import { useSetRecoilState } from "recoil";
+import { transactionsState } from "../../recoil/atoms";
 
 const getCategoryIcon = (cat: string, tType: "income" | "expense") => {
   if (tType === "income") return <CircleDollarSign className="h-4 w-4 text-emerald-400" />;
@@ -31,6 +33,7 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
 }) => {
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const setTransactions = useSetRecoilState(transactionsState);
 
   const handleDeleteClick = (id: string) => {
     setDeleteTargetId(id);
@@ -40,7 +43,10 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
     if (!deleteTargetId) return;
     setIsDeleting(true);
     try {
-      await transactionService.deleteTransaction(deleteTargetId);
+      const res = await transactionService.deleteTransaction(deleteTargetId);
+      if (res.success) {
+        setTransactions((prev) => prev.filter((t) => t._id !== deleteTargetId));
+      }
       setDeleteTargetId(null);
       if (onDeleteSuccess) onDeleteSuccess();
     } catch (err) {

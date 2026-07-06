@@ -1,3 +1,4 @@
+import React from "react";
 import type { FC, ComponentType } from "react";
 import { Card } from "../ui/card";
 import { Skeleton } from "../ui/skeleton";
@@ -12,7 +13,7 @@ interface StatCardProps {
   isLoading?: boolean;
 }
 
-export const StatCard: FC<StatCardProps> = ({
+export const StatCard: FC<StatCardProps> = React.memo(({
   label,
   value,
   caption,
@@ -52,6 +53,6 @@ export const StatCard: FC<StatCardProps> = ({
       </div>
     </Card>
   );
-};
+});
 
 export default StatCard;

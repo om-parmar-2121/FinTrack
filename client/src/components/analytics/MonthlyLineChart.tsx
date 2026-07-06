@@ -53,24 +53,26 @@ export const MonthlyLineChart: FC<MonthlyLineChartProps> = ({ isLoading = false,
         <CardDescription>6-month overview of cash flow</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={220}>
-          <LineChart data={data}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
-            <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
-            />
-            <Tooltip
-              {...tooltipStyle}
-              formatter={(value: unknown) => [`₹${(value as number).toLocaleString("en-IN")}`, ""]}
-            />
-            <Line type="monotone" dataKey="income" stroke="var(--chart-1)" strokeWidth={2} dot={{ fill: "var(--chart-1)", r: 3 }} name="Income" />
-            <Line type="monotone" dataKey="expense" stroke="var(--chart-3)" strokeWidth={2} dot={{ fill: "var(--chart-3)", r: 3 }} name="Expense" />
-          </LineChart>
-        </ResponsiveContainer>
+        <div style={{ width: "100%", height: "220px", position: "relative" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={data}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#262626" />
+              <XAxis dataKey="month" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis
+                tick={{ fill: "#94a3b8", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+              />
+              <Tooltip
+                {...tooltipStyle}
+                formatter={(value: unknown) => [`₹${(value as number).toLocaleString("en-IN")}`, ""]}
+              />
+              <Line type="monotone" dataKey="income" stroke="var(--chart-1)" strokeWidth={2} dot={{ fill: "var(--chart-1)", r: 3 }} name="Income" />
+              <Line type="monotone" dataKey="expense" stroke="var(--chart-3)" strokeWidth={2} dot={{ fill: "var(--chart-3)", r: 3 }} name="Expense" />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
         <div className="flex items-center gap-4 mt-3 px-2">
           <span className="flex items-center gap-1.5 text-xs text-zinc-400">
             <span className="h-2 w-4 rounded-sm" style={{ background: "var(--chart-1)" }} />

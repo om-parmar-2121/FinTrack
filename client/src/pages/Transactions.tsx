@@ -1,15 +1,14 @@
 import type { FC } from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useRecoilValue } from "recoil";
 import { Badge } from "../components/ui/badge";
 import { Card, CardContent } from "../components/ui/card";
-import { Skeleton } from "../components/ui/skeleton";
 import { TransactionForm } from "../components/transactions/TransactionForm";
 import { TransactionFilters } from "../components/transactions/TransactionFilters";
 import { TransactionHistory } from "../components/transactions/TransactionHistory";
-import { AlertCircle, Wallet, ArrowUpRight, ArrowDownRight } from "lucide-react";
-import transactionService from "../services/transaction.service";
-import analyticsService from "../services/analytics.service";
-import type { TransactionItem } from "../components/transactions/types";
+import { Wallet, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { transactionsState } from "../recoil/atoms";
+import { transactionsSummarySelector } from "../recoil/selectors";
 
 const Transactions: FC = () => {
   const date: Date = new Date();
@@ -27,67 +26,45 @@ const Transactions: FC = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
 
-  // List states
-  const [isLoadingList, setIsLoadingList] = useState(true);
-  const [error, setError] = useState("");
-  const [transactions, setTransactions] = useState<TransactionItem[]>([]);
-
-  // Balance summary states
-  const [summary, setSummary] = useState({ totalIncome: 0, totalExpense: 0, balance: 0 });
-  const [isLoadingSummary, setIsLoadingSummary] = useState(true);
-
-  const fetchSummary = async () => {
-    setIsLoadingSummary(true);
-    try {
-      const res = await analyticsService.getSummary();
-      if (res.success) setSummary(res.data);
-    } catch { }
-    finally { setIsLoadingSummary(false); }
-  };
-
-  const fetchTransactions = async () => {
-    setIsLoadingList(true);
-    setError("");
-    try {
-      const filters: any = {};
-      if (type !== "all") filters.type = type;
-      if (category !== "all") filters.category = category;
-      if (fromDate) filters.startDate = new Date(fromDate).toISOString();
-      if (toDate) filters.endDate = new Date(toDate).toISOString();
-
-      const result = await transactionService.getTransactions(filters);
-      if (result.success) {
-        setTransactions(result.data || []);
-      }
-    } catch (err: any) {
-      setError("Failed to fetch transaction logs from the server.");
-    } finally {
-      setIsLoadingList(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchSummary();
-  }, []);
-
-  useEffect(() => {
-    fetchTransactions();
-  }, [type, category, fromDate, toDate]);
-
-  const handleUpdate = () => {
-    fetchTransactions();
-    fetchSummary();
-  };
+  const transactions = useRecoilValue(transactionsState);
+  const summary = useRecoilValue(transactionsSummarySelector);
 
   const filteredTransactions = transactions.filter((t) => {
-    const term = search.toLowerCase().trim();
-    if (!term) return true;
-    return (
-      t.note?.toLowerCase().includes(term) ||
-      t.category?.toLowerCase().includes(term)
-    );
-  });
+    // Filter by type
+    if (type !== "all" && t.type !== type) return false;
 
+    // Filter by category
+    if (category !== "all" && t.category !== category) return false;
+
+    // Filter by fromDate
+    if (fromDate) {
+      const tDate = new Date(t.date);
+      const fDate = new Date(fromDate);
+      tDate.setHours(0, 0, 0, 0);
+      fDate.setHours(0, 0, 0, 0);
+      if (tDate < fDate) return false;
+    }
+
+    // Filter by toDate
+    if (toDate) {
+      const tDate = new Date(t.date);
+      const oDate = new Date(toDate);
+      tDate.setHours(23, 59, 59, 999);
+      oDate.setHours(23, 59, 59, 999);
+      if (tDate > oDate) return false;
+    }
+
+    // Filter by search query
+    const term = search.toLowerCase().trim();
+    if (term) {
+      return (
+        t.note?.toLowerCase().includes(term) ||
+        t.category?.toLowerCase().includes(term)
+      );
+    }
+
+    return true;
+  });
 
   return (
     <div className="min-h-full bg-[#0b0b0b] text-white py-4 lg:h-screen lg:overflow-hidden lg:flex lg:flex-col lg:py-4">
@@ -106,41 +83,20 @@ const Transactions: FC = () => {
           </Badge>
         </div>
 
-        {/* Error Alert */}
-        {error && (
-          <div className="flex items-start gap-2 p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-200 animate-in fade-in duration-200">
-            <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-            <div className="flex-1 font-medium leading-relaxed">{error}</div>
-          </div>
-        )}
-
         {/* Stats Grid */}
         <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
           {/* Current Balance Card */}
           <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white overflow-hidden relative">
             <CardContent className="flex items-center justify-between">
               <div>
-                {isLoadingSummary ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-3.5 w-28 bg-zinc-800/50 rounded-lg" />
-                    <Skeleton className="h-7 w-20 bg-zinc-800/50 rounded-xl" />
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Current Balance</p>
-                    <h3 className="text-2xl font-bold text-blue-400 mt-1">
-                      ₹{summary.balance.toLocaleString("en-IN")}
-                    </h3>
-                  </>
-                )}
+                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Current Balance</p>
+                <h3 className="text-2xl font-bold text-blue-400 mt-1">
+                  ₹{summary.balance.toLocaleString("en-IN")}
+                </h3>
               </div>
-              {isLoadingSummary ? (
-                <Skeleton className="h-[44px] w-[44px] bg-zinc-800/50 rounded-full animate-pulse" />
-              ) : (
-                <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
-                  <Wallet className="h-5 w-5" />
-                </div>
-              )}
+              <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
+                <Wallet className="h-5 w-5" />
+              </div>
             </CardContent>
           </Card>
 
@@ -148,27 +104,14 @@ const Transactions: FC = () => {
           <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white overflow-hidden relative">
             <CardContent className="flex items-center justify-between">
               <div>
-                {isLoadingSummary ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-3.5 w-28 bg-zinc-800/50 rounded-lg" />
-                    <Skeleton className="h-7 w-20 bg-zinc-800/50 rounded-xl" />
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Monthly Income</p>
-                    <h3 className="text-2xl font-bold text-emerald-400 mt-1">
-                      ₹{summary.totalIncome.toLocaleString("en-IN")}
-                    </h3>
-                  </>
-                )}
+                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Monthly Income</p>
+                <h3 className="text-2xl font-bold text-emerald-400 mt-1">
+                  ₹{summary.totalIncome.toLocaleString("en-IN")}
+                </h3>
               </div>
-              {isLoadingSummary ? (
-                <Skeleton className="h-[44px] w-[44px] bg-zinc-800/50 rounded-full animate-pulse" />
-              ) : (
-                <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-500">
-                  <ArrowUpRight className="h-5 w-5" />
-                </div>
-              )}
+              <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-500">
+                <ArrowUpRight className="h-5 w-5" />
+              </div>
             </CardContent>
           </Card>
 
@@ -176,27 +119,14 @@ const Transactions: FC = () => {
           <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white overflow-hidden relative">
             <CardContent className="flex items-center justify-between">
               <div>
-                {isLoadingSummary ? (
-                  <div className="space-y-2">
-                    <Skeleton className="h-3.5 w-28 bg-zinc-800/50 rounded-lg" />
-                    <Skeleton className="h-7 w-20 bg-zinc-800/50 rounded-xl" />
-                  </div>
-                ) : (
-                  <>
-                    <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Monthly Expense</p>
-                    <h3 className="text-2xl font-bold text-rose-400 mt-1">
-                      ₹{summary.totalExpense.toLocaleString("en-IN")}
-                    </h3>
-                  </>
-                )}
+                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Monthly Expense</p>
+                <h3 className="text-2xl font-bold text-rose-400 mt-1">
+                  ₹{summary.totalExpense.toLocaleString("en-IN")}
+                </h3>
               </div>
-              {isLoadingSummary ? (
-                <Skeleton className="h-[44px] w-[44px] bg-zinc-800/50 rounded-full animate-pulse" />
-              ) : (
-                <div className="p-3 bg-rose-500/10 rounded-xl text-rose-500">
-                  <ArrowDownRight className="h-5 w-5" />
-                </div>
-              )}
+              <div className="p-3 bg-rose-500/10 rounded-xl text-rose-500">
+                <ArrowDownRight className="h-5 w-5" />
+              </div>
             </CardContent>
           </Card>
         </div>
@@ -205,7 +135,7 @@ const Transactions: FC = () => {
 
           {/* Left Column: Form */}
           <div className="xl:w-[36%] xl:shrink-0 flex flex-col">
-            <TransactionForm onSuccess={handleUpdate} />
+            <TransactionForm />
           </div>
 
           {/* Right Column: Filters + History */}
@@ -224,8 +154,7 @@ const Transactions: FC = () => {
             />
             <TransactionHistory
               transactions={filteredTransactions}
-              isLoading={isLoadingList}
-              onDeleteSuccess={handleUpdate}
+              isLoading={false}
             />
           </div>
 

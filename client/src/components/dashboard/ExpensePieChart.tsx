@@ -94,37 +94,39 @@ export const ExpensePieChart: FC<ExpensePieChartProps> = ({
 			)}
 
 			<CardContent className={showHeader ? undefined : "flex h-full items-center justify-center pb-0"}>
-				<ResponsiveContainer width="100%" height={height}>
-					<PieChart>
-						<Pie
-							data={displayData}
-							cx="50%"
-							cy="45%"
-							labelLine={false}
-							outerRadius={65}
-							innerRadius={35}
-							fill="var(--chart-1)"
-							dataKey="amount"
-							nameKey="category"
-						/>
-						<Tooltip
-							contentStyle={{
-								backgroundColor: "#0b0b0b",
-								border: "1px solid #262626",
-								borderRadius: 8,
-								color: "#ffffff",
-							}}
-							itemStyle={{ color: "#e5e7eb" }}
-						/>
-						<Legend
-							wrapperStyle={{
-								paddingTop: "20px",
-								color: "#94a3b8",
-								fontSize: "0.75rem",
-							}}
-						/>
-					</PieChart>
-				</ResponsiveContainer>
+				<div style={{ width: "100%", height: `${height}px`, position: "relative" }}>
+					<ResponsiveContainer width="100%" height="100%">
+						<PieChart>
+							<Pie
+								data={displayData}
+								cx="50%"
+								cy="45%"
+								labelLine={false}
+								outerRadius={65}
+								innerRadius={35}
+								fill="var(--chart-1)"
+								dataKey="amount"
+								nameKey="category"
+							/>
+							<Tooltip
+								contentStyle={{
+									backgroundColor: "#0b0b0b",
+									border: "1px solid #262626",
+									borderRadius: 8,
+									color: "#ffffff",
+								}}
+								itemStyle={{ color: "#e5e7eb" }}
+							/>
+							<Legend
+								wrapperStyle={{
+									paddingTop: "20px",
+									color: "#94a3b8",
+									fontSize: "0.75rem",
+								}}
+							/>
+						</PieChart>
+					</ResponsiveContainer>
+				</div>
 			</CardContent>
 
 		</Card>

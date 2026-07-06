@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import type { FC, FormEvent, ChangeEvent } from "react";
 import { cn } from "../../lib/utils";
 import { Link, useNavigate } from "react-router-dom";
@@ -23,7 +23,7 @@ interface SignupFormData {
   savingGoal: string;
 }
 
-export const SignupForm: FC<SignupFormProps> = ({
+export const SignupForm: FC<SignupFormProps> = React.memo(({
   className,
   ...props
 }) => {
@@ -317,6 +317,6 @@ export const SignupForm: FC<SignupFormProps> = ({
       </Card>
     </div>
   );
-};
+});
 
 export default SignupForm;

@@ -55,31 +55,33 @@ export const WeeklyBarChart: FC<WeeklyBarChartProps> = ({ isLoading = false, dat
         <CardDescription>Day-by-day spending for the current week</CardDescription>
       </CardHeader>
       <CardContent>
-        <ResponsiveContainer width="100%" height={180}>
-          <BarChart data={data} barSize={36}>
-            <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
-            <XAxis dataKey="day" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={false} tickLine={false} />
-            <YAxis
-              tick={{ fill: "#94a3b8", fontSize: 12 }}
-              axisLine={false}
-              tickLine={false}
-              tickFormatter={(v) => `₹${v}`}
-            />
-            <Tooltip
-              {...tooltipStyle}
-              cursor={false}
-              formatter={(value: unknown) => [`₹${(value as number).toLocaleString("en-IN")}`, "Spend"]}
-            />
-            <Bar dataKey="amount" radius={[6, 6, 0, 0]} activeBar={false}>
-              {data.map((entry, index) => (
-                <Cell
-                  key={`cell-${index}`}
-                  fill={entry.amount > 0 && entry.amount === maxAmount ? "var(--chart-2)" : "var(--chart-4)"}
-                />
-              ))}
-            </Bar>
-          </BarChart>
-        </ResponsiveContainer>
+        <div style={{ width: "100%", height: "180px", position: "relative" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data} barSize={36}>
+              <CartesianGrid strokeDasharray="3 3" stroke="#262626" vertical={false} />
+              <XAxis dataKey="day" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis
+                tick={{ fill: "#94a3b8", fontSize: 12 }}
+                axisLine={false}
+                tickLine={false}
+                tickFormatter={(v) => `₹${v}`}
+              />
+              <Tooltip
+                {...tooltipStyle}
+                cursor={false}
+                formatter={(value: unknown) => [`₹${(value as number).toLocaleString("en-IN")}`, "Spend"]}
+              />
+              <Bar dataKey="amount" radius={[6, 6, 0, 0]} activeBar={false}>
+                {data.map((entry, index) => (
+                  <Cell
+                    key={`cell-${index}`}
+                    fill={entry.amount > 0 && entry.amount === maxAmount ? "var(--chart-2)" : "var(--chart-4)"}
+                  />
+                ))}
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </CardContent>
     </Card>
   );

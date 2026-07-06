@@ -6,6 +6,8 @@ import { Trash2, Check, AlertTriangle } from "lucide-react";
 import type { DebtItem } from "./types";
 import { Skeleton } from "../ui/skeleton";
 import debtService from "../../services/debt.service";
+import { useSetRecoilState } from "recoil";
+import { debtsState } from "../../recoil/atoms";
 
 interface DebtHistoryProps {
   debts: DebtItem[];
@@ -23,6 +25,7 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMarkingId, setIsMarkingId] = useState<string | null>(null);
+  const setDebts = useSetRecoilState(debtsState);
 
   const handleDeleteClick = (id: string) => {
     setDeleteTargetId(id);
@@ -32,7 +35,10 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
     if (!deleteTargetId) return;
     setIsDeleting(true);
     try {
-      await debtService.deleteDebt(deleteTargetId);
+      const res = await debtService.deleteDebt(deleteTargetId);
+      if (res.success) {
+        setDebts((prev) => prev.filter((d) => d._id !== deleteTargetId));
+      }
       setDeleteTargetId(null);
       if (onDeleteSuccess) onDeleteSuccess();
     } catch (err) {
@@ -45,7 +51,10 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
   const handleMarkAsPaid = async (id: string) => {
     setIsMarkingId(id);
     try {
-      await debtService.markAsPaid(id);
+      const res = await debtService.markAsPaid(id);
+      if (res.success) {
+        setDebts((prev) => prev.map((d) => d._id === id ? { ...d, status: "paid" } : d));
+      }
       if (onPaySuccess) onPaySuccess();
     } catch (err) {
       alert("Failed to mark debt as paid. Please try again.");

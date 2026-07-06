@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import type { FC, ChangeEvent, FormEvent } from "react";
 import { cn } from "../../lib/utils";
 import { Button } from "../../components/ui/button";
@@ -19,7 +19,7 @@ interface LoginFormData {
   password: string;
 }
 
-export const LoginForm: FC<LoginFormProps> = ({ className, ...props }) => {
+export const LoginForm: FC<LoginFormProps> = React.memo(({ className, ...props }) => {
   const navigate = useNavigate();
   const { loginWithRedirect } = useAuth0();
   const [isLoading, setIsLoading] = useState(false);
@@ -143,7 +143,7 @@ export const LoginForm: FC<LoginFormProps> = ({ className, ...props }) => {
                 Or
               </span>
             </div>
-            
+
             <Button
               type="button"
               onClick={() => loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } })}
@@ -162,4 +162,4 @@ export const LoginForm: FC<LoginFormProps> = ({ className, ...props }) => {
       </div>
     </div>
   );
-};
+});

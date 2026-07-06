@@ -1,5 +1,4 @@
-import type { FC } from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { ArrowLeftRight, ChartLine, HandCoins, LayoutDashboard, Menu, X, LogOut } from "lucide-react";
 import { cn } from "../../lib/utils";
@@ -13,7 +12,7 @@ const navigation = [
   { label: "Debts", to: "/debts", icon: HandCoins },
 ];
 
-const AppShell: FC = () => {
+const AppShell = React.memo(() => {
   const { logout: auth0Logout } = useAuth0();
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
@@ -156,6 +155,6 @@ const AppShell: FC = () => {
       </div>
     </div>
   );
-};
+});
 
 export default AppShell;
