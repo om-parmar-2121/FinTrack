@@ -22,6 +22,7 @@ We went with a modern JavaScript/TypeScript stack to keep the app snappy and mai
 
 ### Frontend (Client)
 *   **React + TypeScript** (built with Vite for lightning-fast loads)
+*   **Recoil** for global state management and rendering isolation
 *   **Recharts** for the interactive data visualizations
 *   **Vanilla CSS** (custom variables, radial glows, and smooth transitions)
 *   **Auth0** for seamless Google OAuth integration
@@ -44,14 +45,20 @@ FinTrack/
 │   ├── public/             # Assets, Favicon, and custom SVGs
 │   ├── src/
 │   │   ├── components/     # UI layouts, forms, and route protection guards
-│   │   ├── pages/          # Dashboard, Analytics, Transactions, Debts
-│   │   └── App.tsx         # Routing hub
+│   │   ├── pages/          # Dashboard, Analytics, Transactions, Debts, Login, Signup
+│   │   ├── recoil/         # Global state store (atoms & selectors)
+│   │   ├── services/       # API services (auth, transaction, debt client calls)
+│   │   └── App.tsx         # Routing hub & Auth listener
 │   └── package.json
 └── server/                 # Express Backend
     ├── src/
     │   ├── config/         # DB connection & environment setup
     │   ├── controller/     # Business logic for auth, transactions, debts
+    │   ├── middleware/     # Route guards (JWT verification, validation checks)
+    │   ├── models/         # Mongoose schemas (user, transaction, debt schemas)
+    │   ├── routes/         # Express endpoint definitions
     │   ├── services/       # Email delivery setup
+    │   ├── app.ts          # Express application initialization & middleware configuration
     │   └── server.ts       # Backend entrypoint (forces IPv4)
     └── package.json
 ```
