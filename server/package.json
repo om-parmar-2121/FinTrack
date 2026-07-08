@@ -13,6 +13,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
+    "@types/node": "^25.9.2",
     "axios": "^1.15.0",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
@@ -21,11 +22,11 @@
     "express": "^5.2.1",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.4.1",
+    "node-cron": "^3.0.3",
     "nodemailer": "^9.0.1",
-    "zod": "^3.25.76",
-    "typescript": "^6.0.3",
     "tsx": "^4.22.4",
-    "@types/node": "^25.9.2"
+    "typescript": "^6.0.3",
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -33,6 +34,7 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/node-cron": "^3.0.11",
     "@types/nodemailer": "^8.0.1",
     "nodemon": "^3.1.14"
   }
