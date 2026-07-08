@@ -35,6 +35,10 @@ export const SavingGoalCard: FC<SavingGoalCardProps> = ({
     savingGoal > 0 ? Math.round((savedAmount / savingGoal) * 100) : 0
   );
 
+  const displayAmount = Math.min(savedAmount, savingGoal);
+  const remainingAmount = Math.max(0, savingGoal - savedAmount);
+  const isGoalAchieved = savedAmount >= savingGoal && savingGoal > 0;
+
   const handleSave = async () => {
     const numericGoal = Number(editValue);
     if (isNaN(numericGoal) || numericGoal < 0) {
@@ -156,7 +160,9 @@ export const SavingGoalCard: FC<SavingGoalCardProps> = ({
         <div className="space-y-2.5">
           <div className="flex items-center justify-between text-sm">
             <span className="text-zinc-400">Total Saved</span>
-            <span className="font-bold text-zinc-200">₹{savedAmount.toLocaleString("en-IN")} ({progress}%)</span>
+            <span className="font-bold text-zinc-200">
+              ₹{displayAmount.toLocaleString("en-IN")} ({progress}%)
+            </span>
           </div>
           <div className="h-2.5 w-full rounded-full bg-zinc-800 overflow-hidden">
             <div
@@ -170,9 +176,15 @@ export const SavingGoalCard: FC<SavingGoalCardProps> = ({
 
         <div className="flex items-center justify-between pt-1">
           <span className="text-xs text-zinc-400">Target status</span>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-            On Track
-          </span>
+          {isGoalAchieved ? (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Achieved
+            </span>
+          ) : (
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              ₹{remainingAmount.toLocaleString("en-IN")} remaining
+            </span>
+          )}
         </div>
       </CardContent>
     </Card>
