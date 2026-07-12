@@ -1,10 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import Transaction from "../models/transaction.model.js";
+import User from "../models/user.model.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { errorHandler } from "../utils/errorHandler.utils.js";
 import mongoose from "mongoose";
 
 const getCurrentBalance = async (userId: any, excludeTransactionId?: any): Promise<number> => {
+  const user = await User.findById(userId);
+  const startingBalance = user ? user.startingBalance : 0;
+
   const match: any = {
     userId: new mongoose.Types.ObjectId(userId),
   };
@@ -31,7 +35,7 @@ const getCurrentBalance = async (userId: any, excludeTransactionId?: any): Promi
     if (item._id === "expense") totalExpense = item.total;
   });
 
-  return totalIncome - totalExpense;
+  return startingBalance + totalIncome - totalExpense;
 };
 
 export const addTransaction = asyncHandler(async (
