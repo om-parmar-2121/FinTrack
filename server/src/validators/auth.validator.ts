@@ -7,7 +7,7 @@ export const signupSchema = z.object({
 
   password: z.string().min(6, "Password must be at least 6 characters"),
 
-  monthlyBudget: z.coerce.number().optional(),
+  startingBalance: z.coerce.number().optional(),
 
   savingGoal: z.coerce.number().optional(),
 });
@@ -19,7 +19,7 @@ export const loginSchema = z.object({
 });
 
 export const updateMeSchema = z.object({
-  monthlyBudget: z.coerce.number().min(0, "Monthly budget must be a positive number").optional(),
+  startingBalance: z.coerce.number().min(0, "Starting balance must be a positive number").optional(),
 
   savingGoal: z.coerce.number().min(0, "Saving goal must be a positive number").optional(),
 });

@@ -23,7 +23,7 @@ export const signup = asyncHandler(async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { name, email, password, monthlyBudget, savingGoal } = req.body;
+  const { name, email, password, startingBalance, savingGoal } = req.body;
 
   const userExists = await User.findOne({ email });
   if (userExists) return next(new errorHandler("User already exists", 400));
@@ -34,7 +34,7 @@ export const signup = asyncHandler(async (
     name,
     email,
     password: hashedPassword,
-    monthlyBudget,
+    startingBalance,
     savingGoal,
   });
 
@@ -147,13 +147,13 @@ export const updateMe = asyncHandler(async (
   res: Response,
   next: NextFunction,
 ) => {
-  const { savingGoal, monthlyBudget } = req.body;
+  const { savingGoal, startingBalance } = req.body;
 
   const user = await User.findById(req.user?._id);
   if (!user) return next(new errorHandler("User not found", 404));
 
   if (savingGoal !== undefined) user.savingGoal = savingGoal;
-  if (monthlyBudget !== undefined) user.monthlyBudget = monthlyBudget;
+  if (startingBalance !== undefined) user.startingBalance = startingBalance;
 
   await user.save();
 

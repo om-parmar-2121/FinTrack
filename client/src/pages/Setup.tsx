@@ -6,7 +6,7 @@ import { AlertCircle, Target, Wallet } from "lucide-react";
 
 const Setup: FC = () => {
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({ monthlyBudget: "", savingGoal: "" });
+  const [formData, setFormData] = useState({ startingBalance: "", savingGoal: "" });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -20,7 +20,7 @@ const Setup: FC = () => {
     setError("");
     try {
       await authService.updateMe({
-        monthlyBudget: Number(formData.monthlyBudget),
+        startingBalance: Number(formData.startingBalance),
         savingGoal: Number(formData.savingGoal),
       });
       navigate("/dashboard", { replace: true });
@@ -56,22 +56,22 @@ const Setup: FC = () => {
               </div>
             )}
 
-            {/* Monthly Budget */}
+            {/* Starting Balance */}
             <div className="space-y-2">
-              <label htmlFor="monthlyBudget" className="flex items-center gap-2 text-sm font-medium text-zinc-200">
+              <label htmlFor="startingBalance" className="flex items-center gap-2 text-sm font-medium text-zinc-200">
                 <Wallet className="w-4 h-4 text-blue-400" />
-                Monthly Budget
+                Starting Balance
               </label>
-              <p className="text-xs text-zinc-500">How much do you plan to spend per month?</p>
+              <p className="text-xs text-zinc-500">How much money do you currently have in your accounts/wallet?</p>
               <div className="relative">
                 <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-400 font-medium">₹</span>
                 <input
-                  id="monthlyBudget"
+                  id="startingBalance"
                   type="number"
                   min="0"
-                  value={formData.monthlyBudget}
+                  value={formData.startingBalance}
                   onChange={handleChange}
-                  placeholder="25000"
+                  placeholder="50000"
                   required
                   className="w-full pl-8 pr-4 h-11 bg-[#181818] border border-[#2a2a2a] rounded-xl text-white placeholder:text-zinc-500 text-sm focus:outline-none focus:border-blue-500/60 focus:ring-1 focus:ring-blue-500/30 transition-all duration-200"
                 />

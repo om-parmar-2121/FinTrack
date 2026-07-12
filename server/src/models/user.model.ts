@@ -4,7 +4,7 @@ export interface UserS extends Document {
   name: string;
   email: string;
   password: string;
-  monthlyBudget: number;
+  startingBalance: number;
   savingGoal: number;
   verified: boolean;
 }
@@ -28,7 +28,7 @@ const userSchema = new Schema<UserS>({
     required: true,
   },
 
-  monthlyBudget: {
+  startingBalance: {
     type: Number,
     default: 0,
   },

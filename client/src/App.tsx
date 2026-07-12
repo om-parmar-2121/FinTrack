@@ -1,5 +1,5 @@
 import type { FC } from "react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, lazy, Suspense } from "react";
 import { Route, Routes, useNavigate, useLocation, Navigate } from "react-router-dom";
 import AppShell from "./components/layout/AppShell";
 import { useAuth0 } from "@auth0/auth0-react";
@@ -9,13 +9,14 @@ import debtService from "./services/debt.service";
 import NotFound from "./components/NotFound";
 import { useSetRecoilState } from "recoil";
 import { userState, transactionsState, debtsState } from "./recoil/atoms";
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Dashboard from "./pages/Dashboard";
-import Analytics from "./pages/Analytics";
-import Transactions from "./pages/Transactions";
-import Debts from "./pages/Debts";
-import Setup from "./pages/Setup";
+
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Analytics = lazy(() => import("./pages/Analytics"));
+const Transactions = lazy(() => import("./pages/Transactions"));
+const Debts = lazy(() => import("./pages/Debts"));
+const Setup = lazy(() => import("./pages/Setup"));
 
 const ProtectedRoute = ({ children, isAuthenticated }: { children: React.ReactNode; isAuthenticated: boolean }) => {
   if (!isAuthenticated) {
@@ -56,10 +57,9 @@ const App: FC = () => {
           if (res.success) {
             setUser(res.data?.user || null);
             if (location.pathname === "/" || location.pathname === "/signup") {
-              // Check if new Google user hasn't set budget/goal yet
               const userData = res.data?.user;
               const needsSetup = userData &&
-                (userData.monthlyBudget === 0 || userData.monthlyBudget == null) &&
+                (userData.startingBalance === 0 || userData.startingBalance == null) &&
                 (userData.savingGoal === 0 || userData.savingGoal == null);
               navigate(needsSetup ? "/setup" : "/dashboard");
             }
@@ -97,7 +97,6 @@ const App: FC = () => {
     }
   }, [isLoading, isAuthenticated, location.pathname]);
 
-  // Fetch initial global data when authenticated
   useEffect(() => {
     if (isLocalAuthenticated === true) {
       const loadInitialData = async () => {
@@ -126,36 +125,43 @@ const App: FC = () => {
   }
 
   return (
-    <Routes>
-      <Route path="/" element={
-        <PublicRoute isAuthenticated={isLocalAuthenticated === true}>
-          <Login />
-        </PublicRoute>
-      } />
-      <Route path="/signup" element={
-        <PublicRoute isAuthenticated={isLocalAuthenticated === true}>
-          <Signup />
-        </PublicRoute>
-      } />
-      <Route path="*" element={<NotFound />} />
-      
-      <Route element={
-        <ProtectedRoute isAuthenticated={isLocalAuthenticated === true}>
-          <AppShell />
-        </ProtectedRoute>
-      }>
-        <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/analytics" element={<Analytics />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/debts" element={<Debts />} />
-      </Route>
+    <Suspense fallback={
+      <div className="min-h-screen bg-[#0b0b0b] flex flex-col items-center justify-center text-zinc-400 gap-3">
+        <div className="h-6 w-6 animate-spin rounded-full border-2 border-zinc-700 border-t-blue-500" />
+        <span className="text-xs uppercase tracking-wider text-zinc-500">Loading...</span>
+      </div>
+    }>
+      <Routes>
+        <Route path="/" element={
+          <PublicRoute isAuthenticated={isLocalAuthenticated === true}>
+            <Login />
+          </PublicRoute>
+        } />
+        <Route path="/signup" element={
+          <PublicRoute isAuthenticated={isLocalAuthenticated === true}>
+            <Signup />
+          </PublicRoute>
+        } />
+        <Route path="*" element={<NotFound />} />
+        
+        <Route element={
+          <ProtectedRoute isAuthenticated={isLocalAuthenticated === true}>
+            <AppShell />
+          </ProtectedRoute>
+        }>
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/analytics" element={<Analytics />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/debts" element={<Debts />} />
+        </Route>
 
-      <Route path="/setup" element={
-        <ProtectedRoute isAuthenticated={isLocalAuthenticated === true}>
-          <Setup />
-        </ProtectedRoute>
-      } />
-    </Routes>
+        <Route path="/setup" element={
+          <ProtectedRoute isAuthenticated={isLocalAuthenticated === true}>
+            <Setup />
+          </ProtectedRoute>
+        } />
+      </Routes>
+    </Suspense>
   );
 };
 

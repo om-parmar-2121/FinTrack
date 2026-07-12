@@ -19,7 +19,7 @@ interface SignupFormData {
   name: string;
   email: string;
   password: string;
-  monthlyBudget: string;
+  startingBalance: string;
   savingGoal: string;
 }
 
@@ -32,7 +32,7 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
     name: "",
     email: "",
     password: "",
-    monthlyBudget: "",
+    startingBalance: "",
     savingGoal: "",
   });
 
@@ -61,7 +61,7 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
         name: formData.name,
         email: formData.email,
         password: formData.password,
-        monthlyBudget: Number(formData.monthlyBudget),
+        startingBalance: Number(formData.startingBalance),
         savingGoal: Number(formData.savingGoal)
       });
 
@@ -84,7 +84,7 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
       name: formData.name,
       email: formData.email,
       password: formData.password,
-      monthlyBudget: Number(formData.monthlyBudget),
+      startingBalance: Number(formData.startingBalance),
       savingGoal: Number(formData.savingGoal)
     });
   };
@@ -112,9 +112,7 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
       {...props}
     >
       <Card className="bg-[#111111]/95 backdrop-blur-xl border border-[#262626] text-white shadow-2xl rounded-2xl">
-
         <CardHeader className="space-y-1 px-5 pt-5 sm:px-6 sm:pt-6">
-
           <CardTitle className="text-xl sm:text-2xl font-bold">
             Create your account
           </CardTitle>
@@ -122,11 +120,9 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
           <CardDescription className="text-zinc-400 text-sm">
             Enter your details below to create your account
           </CardDescription>
-
         </CardHeader>
 
         <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-
           <form
             onSubmit={handleSubmit}
             className="space-y-5"
@@ -142,14 +138,10 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
 
             {/* Full Name */}
             <div>
-
               <Label
                 htmlFor="name"
                 className="block mb-2 text-sm font-medium text-zinc-200"
-              >
-                Full Name
-              </Label>
-
+              > Full Name </Label>
               <Input
                 id="name"
                 type="text"
@@ -159,18 +151,14 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
                 required
                 className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
               />
-
             </div>
 
             {/* Email */}
             <div>
-
               <Label
                 htmlFor="email"
                 className="block mb-2 text-sm font-medium text-zinc-200"
-              >
-                Email
-              </Label>
+              > Email </Label>
 
               <Input
                 id="email"
@@ -181,18 +169,14 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
                 required
                 className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
               />
-
             </div>
 
             {/* Password */}
             <div>
-
               <Label
                 htmlFor="password"
                 className="block mb-2 text-sm font-medium text-zinc-200"
-              >
-                Password
-              </Label>
+              > Password </Label>
 
               <Input
                 id="password"
@@ -203,58 +187,40 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
                 required
                 className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
               />
-
             </div>
 
             {/* Budget + Goal */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-              {/* Monthly Budget */}
+              {/* Starting Balance */}
               <div>
-
                 <Label
-                  htmlFor="monthlyBudget"
+                  htmlFor="startingBalance"
                   className="block mb-2 text-sm font-medium text-zinc-200"
-                >
-                  Monthly Budget
-                </Label>
+                > Starting Balance </Label>
 
                 <div className="relative">
-
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
-                    ₹
-                  </span>
-
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"> ₹ </span>
                   <Input
-                    id="monthlyBudget"
+                    id="startingBalance"
                     type="number"
-                    value={formData.monthlyBudget}
+                    value={formData.startingBalance}
                     onChange={handleChange}
-                    placeholder="5000"
+                    placeholder="50000"
                     required
                     className="pl-8 h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
                   />
-
                 </div>
-
               </div>
 
               {/* Saving Goal */}
               <div>
-
                 <Label
                   htmlFor="savingGoal"
                   className="block mb-2 text-sm font medium text-zinc-200"
-                >
-                  Saving Goal
-                </Label>
+                > Saving Goal </Label>
 
                 <div className="relative">
-
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400">
-                    ₹
-                  </span>
-
+                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"> ₹ </span>
                   <Input
                     id="savingGoal"
                     type="number"
@@ -264,11 +230,8 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
                     required
                     className="pl-8 h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
                   />
-
                 </div>
-
               </div>
-
             </div>
 
             {/* Submit Button */}
@@ -304,16 +267,11 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
                 <Link
                   to="/"
                   className="text-blue-500 hover:text-white! transition-colors duration-200 no-underline!"
-                >
-                  Sign in
-                </Link>
+                > Sign in </Link>
               </p>
             </div>
-
           </form>
-
         </CardContent>
-
       </Card>
     </div>
   );

@@ -3,11 +3,11 @@ import { userState, transactionsState, transactionFiltersState, debtsState } fro
 import type { TransactionItem } from "../components/transactions/types";
 import type { DebtItem } from "../components/debts/types";
 
-// ─── USER SELECTORS ────────────────────────────────────────────────────────────
+// USER SELECTORS
 
 export const isAuthenticatedState = selector<boolean>({
   key: "isAuthenticatedState",
-  get: ({ get }) => get(userState) !== null,
+  get: ({ get }) => get(userState) !== null
 });
 
 export const userFinancialGoalsState = selector({
@@ -15,29 +15,35 @@ export const userFinancialGoalsState = selector({
   get: ({ get }) => {
     const user = get(userState);
     return {
-      monthlyBudget: user?.monthlyBudget ?? 0,
+      startingBalance: user?.startingBalance ?? 0,
       savingGoal: user?.savingGoal ?? 0,
     };
-  },
+  }
 });
 
-// ─── TRANSACTION SELECTORS ─────────────────────────────────────────────────────
+// TRANSACTION SELECTORS
 
 export const transactionsSummarySelector = selector({
   key: "transactionsSummarySelector",
   get: ({ get }) => {
     const txs = get(transactionsState);
-    let totalIncome = 0;
-    let totalExpense = 0;
+    const user = get(userState);
+    const startingBalance = user?.startingBalance ?? 0;
+    let loggedIncome = 0;
+    let loggedExpense = 0;
     for (const t of txs) {
       if (t.type === "income") {
-        totalIncome += t.amount;
+        loggedIncome += t.amount;
       } else {
-        totalExpense += t.amount;
+        loggedExpense += t.amount;
       }
     }
-    return { totalIncome, totalExpense, balance: totalIncome - totalExpense };
-  },
+    return {
+      totalIncome: startingBalance + loggedIncome,
+      totalExpense: loggedExpense,
+      balance: (startingBalance + loggedIncome) - loggedExpense
+    };
+  }
 });
 
 export const recentTransactionsSelector = selector<TransactionItem[]>({
@@ -47,7 +53,7 @@ export const recentTransactionsSelector = selector<TransactionItem[]>({
     return [...txs]
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
       .slice(0, 6);
-  },
+  }
 });
 
 export const transactionsByCategorySelector = selector<{ category: string; amount: number }[]>({
@@ -63,7 +69,7 @@ export const transactionsByCategorySelector = selector<{ category: string; amoun
     return Array.from(map.entries())
       .map(([category, amount]) => ({ category, amount }))
       .sort((a, b) => b.amount - a.amount);
-  },
+  }
 });
 
 export const filteredTransactionsSelector = selector<TransactionItem[]>({
@@ -80,10 +86,10 @@ export const filteredTransactionsSelector = selector<TransactionItem[]>({
       }
       return true;
     });
-  },
+  }
 });
 
-// ─── OFFLINE INSIGHT SELECTORS ──────────────────────────────────────────────────
+// OFFLINE INSIGHT SELECTORS
 
 export const highestExpenseSelector = selector({
   key: "highestExpenseSelector",
@@ -92,7 +98,7 @@ export const highestExpenseSelector = selector({
     const expenses = txs.filter((t) => t.type === "expense");
     if (expenses.length === 0) return null;
     return [...expenses].sort((a, b) => b.amount - a.amount)[0];
-  },
+  }
 });
 
 export const monthlyExpenseSelector = selector<number>({
@@ -104,7 +110,7 @@ export const monthlyExpenseSelector = selector<number>({
     return txs
       .filter((t) => t.type === "expense" && new Date(t.date) >= startOfMonth)
       .reduce((sum, t) => sum + t.amount, 0);
-  },
+  }
 });
 
 export const weeklyExpenseSelector = selector<number>({
@@ -119,10 +125,10 @@ export const weeklyExpenseSelector = selector<number>({
     return txs
       .filter((t) => t.type === "expense" && new Date(t.date) >= startOfWeek)
       .reduce((sum, t) => sum + t.amount, 0);
-  },
+  }
 });
 
-// ─── OFFLINE ANALYTICS SELECTORS ────────────────────────────────────────────────
+// OFFLINE ANALYTICS SELECTORS
 
 export const monthlyAnalyticsSelector = selector({
   key: "monthlyAnalyticsSelector",
@@ -144,7 +150,7 @@ export const monthlyAnalyticsSelector = selector({
       }
     }
     return data;
-  },
+  }
 });
 
 export const weeklySpendAnalyticsSelector = selector({
@@ -177,10 +183,10 @@ export const weeklySpendAnalyticsSelector = selector({
       }
     }
     return dailySums;
-  },
+  }
 });
 
-// ─── DEBT SELECTORS ────────────────────────────────────────────────────────────
+// DEBT SELECTORS
 
 export const debtSummarySelector = selector({
   key: "debtSummarySelector",
@@ -194,7 +200,7 @@ export const debtSummarySelector = selector({
       .reduce((s, d) => s + d.amount, 0);
     const pendingCount = debts.filter((d) => d.status === "pending" || d.status === "overdue").length;
     return { totalLent, totalBorrowed, pendingCount };
-  },
+  }
 });
 
 export const pendingDebtsSelector = selector<DebtItem[]>({
@@ -202,25 +208,17 @@ export const pendingDebtsSelector = selector<DebtItem[]>({
   get: ({ get }) => get(debtsState).filter((d) => d.status === "pending" || d.status === "overdue"),
 });
 
-// ─── ALERTS SELECTOR ──────────────────────────────────────────────────────────
+// ALERTS SELECTOR
 
 export const budgetAlertsSelector = selector<string[]>({
   key: "budgetAlertsSelector",
   get: ({ get }) => {
-    const { monthlyBudget } = get(userFinancialGoalsState);
-    const totalMonthly = get(monthlyExpenseSelector);
-    const totalWeekly = get(weeklyExpenseSelector);
+    const summary = get(transactionsSummarySelector);
     const alerts: string[] = [];
 
-    if (monthlyBudget > 0) {
-      if (totalMonthly > monthlyBudget) {
-        alerts.push(`You exceeded your monthly budget by ₹${(totalMonthly - monthlyBudget).toLocaleString("en-IN")}`);
-      }
-      const weeklyBudget = monthlyBudget / 4;
-      if (totalWeekly > weeklyBudget) {
-        alerts.push("You are overspending this week");
-      }
+    if (summary.balance < 0) {
+      alerts.push("Your account balance is negative!");
     }
     return alerts;
-  },
+  }
 });

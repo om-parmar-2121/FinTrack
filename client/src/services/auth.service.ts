@@ -4,7 +4,7 @@ export interface User {
   _id: string;
   name: string;
   email: string;
-  monthlyBudget: number;
+  startingBalance: number;
   savingGoal: number;
   createdAt: string;
   updatedAt: string;
@@ -52,7 +52,7 @@ export const authService = {
     return response.data;
   },
 
-  updateMe: async (data: Partial<Pick<User, "savingGoal" | "monthlyBudget">>): Promise<{ success: boolean; data: User }> => {
+  updateMe: async (data: Partial<Pick<User, "savingGoal" | "startingBalance">>): Promise<{ success: boolean; data: User }> => {
     const response = await api.put<{ success: boolean; data: User }>("/me", data);
     return response.data;
   },
