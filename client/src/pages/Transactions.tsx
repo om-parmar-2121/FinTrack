@@ -2,11 +2,10 @@ import type { FC } from "react";
 import { useState } from "react";
 import { useRecoilValue } from "recoil";
 import { Badge } from "../components/ui/badge";
-import { Card, CardContent } from "../components/ui/card";
 import { TransactionForm } from "../components/transactions/TransactionForm";
 import { TransactionFilters } from "../components/transactions/TransactionFilters";
 import { TransactionHistory } from "../components/transactions/TransactionHistory";
-import { Wallet, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { TransactionStats } from "../components/transactions/TransactionStats";
 import { transactionsState } from "../recoil/atoms";
 import { transactionsSummarySelector } from "../recoil/selectors";
 
@@ -84,52 +83,12 @@ const Transactions: FC = () => {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-          {/* Current Balance Card */}
-          <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white overflow-hidden relative">
-            <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Current Balance</p>
-                <h3 className="text-2xl font-bold text-blue-400 mt-1">
-                  ₹{summary.balance.toLocaleString("en-IN")}
-                </h3>
-              </div>
-              <div className="p-3 bg-blue-500/10 rounded-xl text-blue-500">
-                <Wallet className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Monthly Income Card */}
-          <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white overflow-hidden relative">
-            <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Monthly Income</p>
-                <h3 className="text-2xl font-bold text-emerald-400 mt-1">
-                  ₹{summary.totalIncome.toLocaleString("en-IN")}
-                </h3>
-              </div>
-              <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-500">
-                <ArrowUpRight className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Monthly Expense Card */}
-          <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white overflow-hidden relative">
-            <CardContent className="flex items-center justify-between">
-              <div>
-                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Monthly Expense</p>
-                <h3 className="text-2xl font-bold text-rose-400 mt-1">
-                  ₹{summary.totalExpense.toLocaleString("en-IN")}
-                </h3>
-              </div>
-              <div className="p-3 bg-rose-500/10 rounded-xl text-rose-500">
-                <ArrowDownRight className="h-5 w-5" />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+        <TransactionStats
+          balance={summary.balance}
+          totalIncome={summary.totalIncome}
+          totalExpense={summary.totalExpense}
+          isLoading={false}
+        />
 
         <div className="flex flex-col xl:flex-row gap-4 lg:flex-1 lg:min-h-0 xl:items-stretch">
 
