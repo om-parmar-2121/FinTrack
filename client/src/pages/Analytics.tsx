@@ -6,6 +6,7 @@ import { MonthlyLineChart } from "../components/analytics/MonthlyLineChart";
 import { CategoryBreakdownCard } from "../components/analytics/CategoryBreakdownCard";
 import { WeeklyBarChart } from "../components/analytics/WeeklyBarChart";
 import { ArrowUpRight, ArrowDownRight, Flame } from "lucide-react";
+import { userState } from "../recoil/atoms";
 import {
   monthlyAnalyticsSelector,
   transactionsByCategorySelector,
@@ -15,6 +16,7 @@ import {
 } from "../recoil/selectors";
 
 const Analytics: FC = () => {
+  const user = useRecoilValue(userState);
   const monthlyData = useRecoilValue(monthlyAnalyticsSelector);
   const categories = useRecoilValue(transactionsByCategorySelector);
   const highestExpense = useRecoilValue(highestExpenseSelector);
@@ -81,9 +83,16 @@ const Analytics: FC = () => {
               Monthly trends, category breakdowns, and spending insights.
             </p>
           </div>
-          <Badge variant="secondary" className="hidden sm:inline-flex w-fit self-start px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
-            {`${formattedDate}`}
-          </Badge>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {user?.name && (
+              <Badge variant="secondary" className="px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
+                {user.name}
+              </Badge>
+            )}
+            <Badge variant="secondary" className="hidden sm:inline-flex w-fit px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
+              {`${formattedDate}`}
+            </Badge>
+          </div>
         </div>
 
         {/* Stat Cards - 3 cards */}

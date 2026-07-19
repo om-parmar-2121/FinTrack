@@ -6,10 +6,11 @@ import { DebtStats } from "../components/debts/DebtStats";
 import { DebtForm } from "../components/debts/DebtForm";
 import { DebtFilters } from "../components/debts/DebtFilters";
 import { DebtHistory } from "../components/debts/DebtHistory";
-import { debtsState } from "../recoil/atoms";
+import { userState, debtsState } from "../recoil/atoms";
 import { debtSummarySelector } from "../recoil/selectors";
 
 const Debts: FC = () => {
+  const user = useRecoilValue(userState);
   const date: Date = new Date();
   const options: Intl.DateTimeFormatOptions = {
     day: '2-digit',
@@ -80,9 +81,16 @@ const Debts: FC = () => {
               Track money borrowed, lent, overdue status, and paid histories.
             </p>
           </div>
-          <Badge variant="secondary" className="hidden sm:inline-flex w-fit self-start px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
-            {`${formattedDate}`}
-          </Badge>
+          <div className="flex items-center gap-2 self-start sm:self-auto">
+            {user?.name && (
+              <Badge variant="secondary" className="px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
+                {user.name}
+              </Badge>
+            )}
+            <Badge variant="secondary" className="hidden sm:inline-flex w-fit px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
+              {`${formattedDate}`}
+            </Badge>
+          </div>
         </div>
 
         {/* Stats Summary Cards */}
