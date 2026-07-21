@@ -95,7 +95,9 @@ export const highestExpenseSelector = selector({
   key: "highestExpenseSelector",
   get: ({ get }) => {
     const txs = get(transactionsState);
-    const expenses = txs.filter((t) => t.type === "expense");
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const expenses = txs.filter((t) => t.type === "expense" && new Date(t.date) >= startOfMonth);
     if (expenses.length === 0) return null;
     return [...expenses].sort((a, b) => b.amount - a.amount)[0];
   }

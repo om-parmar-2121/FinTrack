@@ -32,23 +32,18 @@ const Analytics: FC = () => {
   const formattedDate: string = new Intl.DateTimeFormat('en-GB', options).format(date).replace(/ /g, '-');
 
   const currentMonthShortName = new Intl.DateTimeFormat("en-US", { month: "short" }).format(new Date());
-  const currentMonthLongName = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date());
 
   const currentMonthData = monthlyData.find((d) => d.month === currentMonthShortName);
   const monthlyIncome = currentMonthData ? currentMonthData.income : 0;
 
   const highestExpenseAmt = highestExpense
-    ? `₹${highestExpense.amount.toLocaleString("en-IN")}`
+    ? `₹${highestExpense.amount.toLocaleString("en-IN")} (${highestExpense.category.charAt(0).toUpperCase() + highestExpense.category.slice(1)})`
     : "₹0";
-  const highestExpenseCaption = highestExpense
-    ? `${highestExpense.category} category`
-    : "None recorded";
 
   const dynamicStats = [
     {
       label: "Monthly Income",
       value: `₹${monthlyIncome.toLocaleString("en-IN")}`,
-      caption: currentMonthLongName,
       icon: ArrowUpRight,
       iconColor: "text-emerald-500 bg-emerald-500/10",
       valueColor: "text-emerald-400",
@@ -56,7 +51,6 @@ const Analytics: FC = () => {
     {
       label: "Monthly Expense",
       value: `₹${monthlyExpense.toLocaleString("en-IN")}`,
-      caption: currentMonthLongName,
       icon: ArrowDownRight,
       iconColor: "text-rose-500 bg-rose-500/10",
       valueColor: "text-rose-400",
@@ -64,7 +58,6 @@ const Analytics: FC = () => {
     {
       label: "Highest Expense",
       value: highestExpenseAmt,
-      caption: highestExpenseCaption,
       icon: Flame,
       iconColor: "text-violet-500 bg-violet-500/10",
       valueColor: "text-violet-400",
@@ -102,7 +95,6 @@ const Analytics: FC = () => {
               key={stat.label}
               label={stat.label}
               value={stat.value}
-              caption={stat.caption}
               icon={stat.icon}
               iconColor={stat.iconColor}
               valueColor={stat.valueColor}

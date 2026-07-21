@@ -45,7 +45,7 @@ export const StatCard: FC<StatCardProps> = React.memo(({
           <h3 className={`text-2xl font-bold tracking-tight mt-1 ${valueColor}`}>
             {value}
           </h3>
-          <p className="text-xs text-zinc-500 mt-1">{caption}</p>
+          {caption && <p className="text-xs text-zinc-500 mt-1">{caption}</p>}
         </div>
         <div className={`p-3 rounded-xl ${iconColor} shrink-0 ml-4`}>
           {Icon && <Icon className="h-5 w-5" />}

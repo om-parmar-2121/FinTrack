@@ -21,7 +21,7 @@ const Debts: FC = () => {
 
   const debts = useRecoilValue(debtsState);
   const { totalLent, totalBorrowed } = useRecoilValue(debtSummarySelector);
-  const netBalance = totalLent + totalBorrowed;
+  const netBalance = totalLent - totalBorrowed;
 
   // Filters state
   const [search, setSearch] = useState("");

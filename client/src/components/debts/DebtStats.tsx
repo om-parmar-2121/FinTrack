@@ -29,7 +29,7 @@ export const DebtStats: FC<DebtStatsProps> = ({
               </div>
             ) : (
               <>
-                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Total Active Debts</p>
+                <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Net Debt Position</p>
                 <h3 className="text-2xl font-bold text-blue-400 mt-1">
                   ₹{netBalance.toLocaleString("en-IN")}
                 </h3>

@@ -62,13 +62,10 @@ const Dashboard: FC = () => {
     })
   }));
 
-  const currentMonthLongName = new Intl.DateTimeFormat("en-US", { month: "long", year: "numeric" }).format(new Date());
-
   const dynamicStats = [
     {
       label: "Income",
       value: `₹${summary.totalIncome.toLocaleString("en-IN")}`,
-      caption: currentMonthLongName,
       icon: ArrowUpRight,
       iconColor: "text-emerald-500 bg-emerald-500/10",
       valueColor: "text-emerald-400"
@@ -76,7 +73,6 @@ const Dashboard: FC = () => {
     {
       label: "Expense",
       value: `₹${summary.totalExpense.toLocaleString("en-IN")}`,
-      caption: currentMonthLongName,
       icon: ArrowDownRight,
       iconColor: "text-rose-500 bg-rose-500/10",
       valueColor: "text-rose-400"
@@ -84,7 +80,6 @@ const Dashboard: FC = () => {
     {
       label: "Balance",
       value: `₹${summary.balance.toLocaleString("en-IN")}`,
-      caption: "Total available",
       icon: Wallet,
       iconColor: "text-blue-500 bg-blue-500/10",
       valueColor: "text-blue-400"
@@ -92,7 +87,6 @@ const Dashboard: FC = () => {
     {
       label: "Weekly Spending",
       value: `₹${weeklyExpense.toLocaleString("en-IN")}`,
-      caption: "Last 7 days",
       icon: Calendar,
       iconColor: "text-amber-500 bg-amber-500/10",
       valueColor: "text-amber-400"
@@ -132,7 +126,6 @@ const Dashboard: FC = () => {
               key={stat.label}
               label={stat.label}
               value={stat.value}
-              caption={stat.caption}
               icon={stat.icon}
               iconColor={stat.iconColor}
               valueColor={stat.valueColor}

@@ -23,12 +23,6 @@ export interface InsightsData {
   monthlyExpense: number;
   weeklyExpense: number;
 }
-
-export interface AlertData {
-  type: "monthly" | "weekly";
-  message: string;
-}
-
 export interface MonthlyTrendData {
   month: string;
   income: number;
@@ -48,11 +42,6 @@ export const analyticsService = {
 
   getInsights: async (): Promise<{ success: boolean; data: InsightsData }> => {
     const response = await api.get<{ success: boolean; data: InsightsData }>("/analytics/insights");
-    return response.data;
-  },
-
-  getAlerts: async (): Promise<{ success: boolean; data: AlertData[] }> => {
-    const response = await api.get<{ success: boolean; data: AlertData[] }>("/analytics/alerts");
     return response.data;
   },
 
