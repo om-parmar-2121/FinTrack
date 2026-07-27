@@ -194,20 +194,30 @@ export const debtSummarySelector = selector({
   key: "debtSummarySelector",
   get: ({ get }) => {
     const debts = get(debtsState);
+    // For lent: sum the REMAINING amount owed to user (exclude fully paid)
     const totalLent = debts
       .filter((d) => d.type === "lent" && d.status !== "paid")
-      .reduce((s, d) => s + d.amount, 0);
+      .reduce((s, d) => s + (d.amount - (d.paidAmount ?? 0)), 0);
+    // For borrowed: sum the REMAINING amount user owes (exclude fully paid)
     const totalBorrowed = debts
-      .filter((d) => d.type === "borrowed" && (d.status === "pending" || d.status === "overdue"))
-      .reduce((s, d) => s + d.amount, 0);
-    const pendingCount = debts.filter((d) => d.status === "pending" || d.status === "overdue").length;
-    return { totalLent, totalBorrowed, pendingCount };
+      .filter((d) => d.type === "borrowed" && d.status !== "paid")
+      .reduce((s, d) => s + (d.amount - (d.paidAmount ?? 0)), 0);
+    // Total recovered from lent money (received back)
+    const totalRecovered = debts
+      .filter((d) => d.type === "lent")
+      .reduce((s, d) => s + (d.paidAmount ?? 0), 0);
+    // Total repaid on borrowed money (paid back to others)
+    const totalRepaid = debts
+      .filter((d) => d.type === "borrowed")
+      .reduce((s, d) => s + (d.paidAmount ?? 0), 0);
+    const pendingCount = debts.filter((d) => d.status === "pending" || d.status === "overdue" || d.status === "partial").length;
+    return { totalLent, totalBorrowed, totalRecovered, totalRepaid, pendingCount };
   }
 });
 
 export const pendingDebtsSelector = selector<DebtItem[]>({
   key: "pendingDebtsSelector",
-  get: ({ get }) => get(debtsState).filter((d) => d.status === "pending" || d.status === "overdue"),
+  get: ({ get }) => get(debtsState).filter((d) => d.status === "pending" || d.status === "overdue" || d.status === "partial"),
 });
 
 // ALERTS SELECTOR

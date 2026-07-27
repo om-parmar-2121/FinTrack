@@ -2,12 +2,13 @@ import { useState } from "react";
 import type { FC } from "react";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Trash2, Check, AlertTriangle } from "lucide-react";
+import { Trash2, Check, AlertTriangle, CreditCard } from "lucide-react";
 import type { DebtItem } from "./types";
 import { Skeleton } from "../ui/skeleton";
 import debtService from "../../services/debt.service";
 import { useSetRecoilState } from "recoil";
 import { debtsState } from "../../recoil/atoms";
+import { LogPaymentModal } from "./LogPaymentModal";
 
 interface DebtHistoryProps {
   debts: DebtItem[];
@@ -25,6 +26,7 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMarkingId, setIsMarkingId] = useState<string | null>(null);
+  const [paymentModalDebt, setPaymentModalDebt] = useState<DebtItem | null>(null);
   const setDebts = useSetRecoilState(debtsState);
 
   const handleDeleteClick = (id: string) => {
@@ -53,7 +55,7 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
     try {
       const res = await debtService.markAsPaid(id);
       if (res.success) {
-        setDebts((prev) => prev.map((d) => d._id === id ? { ...d, status: "paid" } : d));
+        setDebts((prev) => prev.map((d) => d._id === id ? res.data : d));
       }
       if (onPaySuccess) onPaySuccess();
     } catch (err) {
@@ -63,13 +65,38 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
     }
   };
 
+  const handlePaymentSuccess = (updatedDebt: DebtItem) => {
+    setDebts((prev) => prev.map((d) => d._id === updatedDebt._id ? updatedDebt : d));
+    if (onPaySuccess) onPaySuccess();
+  };
+
+  const getStatusBadge = (d: DebtItem) => {
+    const paidAmount = d.paidAmount ?? 0;
+    const progress = d.amount > 0 ? Math.round((paidAmount / d.amount) * 100) : 0;
+
+    if (d.status === "paid") {
+      return <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Paid</span>;
+    }
+    if (d.status === "partial") {
+      return (
+        <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-blue-500/10 text-blue-400 border border-blue-500/20">
+          Partial ({progress}%)
+        </span>
+      );
+    }
+    if (d.status === "overdue") {
+      return <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse">Overdue</span>;
+    }
+    return <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending</span>;
+  };
+
   return (
     <>
       <Card className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white shadow-xl lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
         <CardHeader className="pb-3 flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-lg">Debt Records</CardTitle>
-            <CardDescription className="text-zinc-400 text-xs">Review pending and paid balances.</CardDescription>
+            <CardDescription className="text-zinc-400 text-xs">Track payments and remaining balances.</CardDescription>
           </div>
           {!isLoading && (
             <Badge className="bg-zinc-800 border border-zinc-700 text-zinc-300 px-2.5 py-0.5">
@@ -101,104 +128,125 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
                 No debts logged yet.
               </div>
             ) : (
-              debts.map((d) => (
-                <div
-                  key={d._id}
-                  className="group flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-white/5 bg-black/20 hover:bg-white/5 hover:border-white/10 px-4 py-3 text-sm transition-all duration-200"
-                >
-                  {/* Left Column: Avatar & Person details */}
-                  <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
-                    <div className="flex items-center gap-3">
-                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold text-sm uppercase ${d.type === "lent" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
-                        }`}>
-                        {d.person.charAt(0)}
+              debts.map((d) => {
+                const paidAmount = d.paidAmount ?? 0;
+                const remaining = d.amount - paidAmount;
+                const progress = d.amount > 0 ? Math.round((paidAmount / d.amount) * 100) : 0;
+                const isLent = d.type === "lent";
+                const isPaid = d.status === "paid";
+
+                return (
+                  <div
+                    key={d._id}
+                    className="group flex flex-col rounded-2xl border border-white/5 bg-black/20 hover:bg-white/5 hover:border-white/10 px-4 py-3 text-sm transition-all duration-200"
+                  >
+                    {/* Main Row: Avatar + Name + Type + Actions */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        {/* Avatar */}
+                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold text-sm uppercase ${isLent ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"}`}>
+                          {d.person.charAt(0)}
+                        </div>
+
+                        {/* Name + badges + sub-note */}
+                        <div>
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <p className="font-semibold text-white text-sm">{d.person}</p>
+                            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${isLent ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"}`}>
+                              {d.type}
+                            </span>
+                            {getStatusBadge(d)}
+                          </div>
+                          {d.note && <p className="text-xs text-zinc-500 mt-0.5">{d.note}</p>}
+                          {paidAmount > 0 && !isPaid && (
+                            <p className="text-[11px] text-zinc-400 mt-0.5">
+                              ₹{paidAmount.toLocaleString("en-IN")} paid ({progress}%) · ₹{remaining.toLocaleString("en-IN")} left
+                            </p>
+                          )}
+                        </div>
                       </div>
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <p className="font-semibold text-white text-sm sm:text-base">{d.person}</p>
-                          <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${d.type === "lent" ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"
-                            }`}>
-                            {d.type}
-                          </span>
-                          {d.type === "borrowed" && d.status !== "paid" && (
+
+                      {/* Right: Actions + Amount */}
+                      <div className="flex items-center gap-3 ml-auto">
+                        {/* Actions: Log Payment + Mark Paid + Delete (to the left of amount) */}
+                        <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                          {/* Log Payment button */}
+                          {!isPaid && (
+                            <button
+                              type="button"
+                              onClick={() => setPaymentModalDebt(d)}
+                              className="p-1.5 rounded-lg text-zinc-400 hover:text-blue-400 hover:bg-blue-500/10 transition-all cursor-pointer"
+                              title="Log Payment / EMI"
+                            >
+                              <CreditCard className="h-3.5 w-3.5" />
+                            </button>
+                          )}
+
+                          {/* Mark as fully paid */}
+                          {!isPaid && (
                             <button
                               type="button"
                               disabled={isMarkingId === d._id}
                               onClick={() => handleMarkAsPaid(d._id)}
-                              className="p-1.5 rounded-lg text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all cursor-pointer disabled:opacity-50 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 animate-in fade-in inline-flex items-center justify-center h-6 w-6"
-                              title="Mark as Paid"
+                              className="p-1.5 rounded-lg text-zinc-400 hover:text-emerald-400 hover:bg-emerald-500/10 transition-all cursor-pointer disabled:opacity-50"
+                              title="Mark as Fully Paid"
                             >
                               <Check className="h-3.5 w-3.5" />
                             </button>
                           )}
+
+                          {/* Delete */}
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteClick(d._id)}
+                            className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
+                            title="Remove Entry"
+                          >
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
                         </div>
-                        {d.note && <p className="text-xs text-zinc-400 mt-1">{d.note}</p>}
+
+                        {/* Amount & Due Date (Far Right) */}
+                        <div className="text-right">
+                          <p className={`font-bold text-sm whitespace-nowrap ${isLent ? "text-emerald-400" : "text-rose-400"}`}>
+                            {isLent ? "+" : "-"}₹{d.amount.toLocaleString("en-IN")}
+                          </p>
+                          <p className="text-[10px] text-zinc-500 font-mono whitespace-nowrap">
+                            Due: {new Date(d.dueDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                          </p>
+                        </div>
                       </div>
                     </div>
 
-                    {/* Delete action button for mobile view */}
-                    <div className="sm:hidden">
+                    {/* Show Log Payment button inline on mobile (always visible) */}
+                    {!isPaid && (
                       <button
                         type="button"
-                        onClick={() => handleDeleteClick(d._id)}
-                        className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
-                        title="Remove Entry"
+                        onClick={() => setPaymentModalDebt(d)}
+                        className={`sm:hidden mt-2 w-full flex items-center justify-center gap-2 py-1.5 rounded-xl border text-xs font-medium transition-colors cursor-pointer ${isLent ? "border-emerald-500/20 bg-emerald-500/8 text-emerald-400 hover:bg-emerald-500/15" : "border-blue-500/20 bg-blue-500/8 text-blue-400 hover:bg-blue-500/15"}`}
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <CreditCard className="h-3 w-3" />
+                        Log Payment / EMI
                       </button>
-                    </div>
+                    )}
                   </div>
-
-                  {/* Right info: Price, Status, Due date */}
-                  <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0">
-                    <div className="flex flex-row sm:flex-col items-center sm:items-end gap-2 sm:gap-1.5">
-                      {/* Status badge only for borrowed debts */}
-                      {d.type === "borrowed" && (
-                        <span
-                          className={`rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase ${d.status === "paid"
-                              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                              : d.status === "overdue"
-                                ? "bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse"
-                                : "bg-amber-500/10 text-amber-400 border border-amber-500/20"
-                            }`}
-                        >
-                          {d.status}
-                        </span>
-                      )}
-                      <span className="text-[10px] text-zinc-500 font-mono whitespace-nowrap">
-                        Due: {new Date(d.dueDate).toLocaleDateString("en-IN", {
-                          day: "numeric",
-                          month: "short",
-                        })}
-                      </span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <p className={`font-bold text-sm sm:text-base whitespace-nowrap ${d.type === "lent" ? "text-emerald-400" : "text-rose-400"}`}>
-                        {d.type === "lent" ? "+" : "-"}₹{d.amount.toLocaleString("en-IN")}
-                      </p>
-
-                      {/* Delete action button for laptop view */}
-                      <div className="hidden sm:flex items-center gap-1 opacity-80 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-200">
-                        <button
-                          type="button"
-                          onClick={() => handleDeleteClick(d._id)}
-                          className="p-1.5 rounded-lg text-zinc-400 hover:text-rose-400 hover:bg-rose-500/10 transition-all cursor-pointer"
-                          title="Remove Entry"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))
+                );
+              })
             )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Delete Confirmation Modal with Backdrop Blur */}
+      {/* Log Payment Modal */}
+      {paymentModalDebt && (
+        <LogPaymentModal
+          debt={paymentModalDebt}
+          onClose={() => setPaymentModalDebt(null)}
+          onSuccess={handlePaymentSuccess}
+        />
+      )}
+
+      {/* Delete Confirmation Modal */}
       {deleteTargetId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
           <div className="bg-[#121212]/95 border border-white/10 rounded-3xl p-6 max-w-sm w-full space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white">
@@ -213,7 +261,7 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
             </div>
 
             <p className="text-sm text-zinc-300 leading-relaxed">
-              Are you sure you want to permanently delete this debt record from your logs?
+              Are you sure you want to permanently delete this debt record and all its payment history?
             </p>
 
             <div className="flex gap-3 pt-2">

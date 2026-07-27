@@ -46,6 +46,7 @@ const App: FC = () => {
   useEffect(() => {
     const syncAuth0User = async () => {
       if (isAuthenticated && user) {
+        console.log("Your Auth0 ID (sub):", user.sub);
         setIsSyncing(true);
         try {
           const res = await authService.auth0Login({

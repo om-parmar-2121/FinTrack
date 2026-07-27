@@ -130,24 +130,23 @@ export const LoginForm: FC<LoginFormProps> = React.memo(({ className, ...props }
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full h-10 sm:h-11 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/10"
+              className="w-full h-10 sm:h-11 bg-[#155DFC] hover:bg-[#1447E6] text-white text-sm font-medium rounded-xl shadow-none cursor-pointer"
             >
               {isLoading ? "Logging in..." : "Login"}
             </Button>
 
-            <div className="relative flex items-center justify-center py-1">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10" />
-              </div>
-              <span className="relative px-3 bg-[#111111] text-xs font-semibold uppercase tracking-widest text-zinc-500">
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 border-t border-white/10" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
                 Or
               </span>
+              <div className="flex-1 border-t border-white/10" />
             </div>
 
             <Button
               type="button"
               onClick={() => loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } })}
-              className="w-full h-10 sm:h-11 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full h-10 sm:h-11 bg-white/5 border border-white/10 text-white text-sm font-medium rounded-xl flex items-center justify-center gap-2 cursor-pointer"
             >
               <img src="/GoogleLogo.png" alt="google logo" className="h-5 w-5 object-contain" />
               <span>Continue with Google</span>

@@ -132,6 +132,9 @@
   button:not(:disabled), [role="button"]:not(:disabled) {
     cursor: pointer;
     }
+  input, select, textarea {
+    caret-color: #ffffff;
+    }
 }
 
 input:-webkit-autofill,
@@ -190,4 +193,533 @@ input[type="number"] {
 ::-moz-selection {
   background-color: #e5e7eb;
   color: black;
+}
+
+/* ==========================================================================
+   DARK MODE — SUBTLE BORDER REFINEMENTS
+   Reduces the prominence of hardcoded #262626 borders to a finer, softer line
+   ========================================================================== */
+.dark [class*="border-[#262626]"],
+[class*="border-[#262626]"] {
+  border-color: rgba(255, 255, 255, 0.07) !important;
+}
+
+.dark [class*="border-white/10"] {
+  border-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+.dark [class*="border-white/5"] {
+  border-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+/* ==========================================================================
+   AUTH PAGES — ALWAYS DARK (Login / Signup / OTP)
+   Ensures auth forms are permanently dark regardless of system/user theme.
+   These rules override any light-mode selectors with higher specificity.
+   ========================================================================== */
+html:not(.dark) .auth-dark,
+html:not(.dark) .auth-dark * {
+  /* Preserve dark backgrounds */
+  --force-dark: 1;
+}
+
+html:not(.dark) .auth-dark {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+}
+
+.auth-dark [class*="bg-[#111111]"],
+.auth-dark div[data-slot="card"],
+html:not(.dark) .auth-dark [class*="bg-[#111111]"],
+html:not(.dark) .auth-dark div[data-slot="card"] {
+  background-color: #111111 !important;
+  border-color: #262626 !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.auth-dark [class*="bg-[#111111]"]:hover,
+.auth-dark div[data-slot="card"]:hover,
+html:not(.dark) .auth-dark [class*="bg-[#111111]"]:hover,
+html:not(.dark) .auth-dark div[data-slot="card"]:hover {
+  background-color: #111111 !important;
+  border-color: #262626 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+}
+
+.auth-or-span,
+.auth-dark .auth-or-span,
+html:not(.dark) .auth-dark .auth-or-span {
+  background-color: #111111 !important;
+  border: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  filter: none !important;
+}
+
+html:not(.dark) .auth-dark [class*="bg-[#181818]"],
+html:not(.dark) .auth-dark input,
+html:not(.dark) .auth-dark select,
+html:not(.dark) .auth-dark textarea {
+  background-color: #181818 !important;
+  border-color: #2a2a2a !important;
+  color: #ffffff !important;
+  caret-color: #ffffff !important;
+}
+
+html:not(.dark) .auth-dark input::placeholder {
+  color: #71717a !important;
+}
+
+html:not(.dark) .auth-dark h1,
+html:not(.dark) .auth-dark h2,
+html:not(.dark) .auth-dark h3,
+html:not(.dark) .auth-dark h4,
+html:not(.dark) .auth-dark .text-white,
+html:not(.dark) .auth-dark .font-bold,
+html:not(.dark) .auth-dark .font-semibold {
+  color: #ffffff !important;
+}
+
+html:not(.dark) .auth-dark .text-zinc-400,
+html:not(.dark) .auth-dark .text-zinc-500 {
+  color: #71717a !important;
+}
+
+html:not(.dark) .auth-dark [class*="border-white/10"],
+html:not(.dark) .auth-dark [class*="border-[#262626]"],
+html:not(.dark) .auth-dark [class*="border-[#2a2a2a]"] {
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html:not(.dark) .auth-dark [class*="bg-white/5"] {
+  background-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+html:not(.dark) .auth-dark [class*="bg-[#0b0b0b]"],
+html:not(.dark) .auth-dark body {
+  background-color: #000000 !important;
+}
+
+/* Disable all glows, shadows, and 3D transforms on auth buttons */
+.auth-dark button,
+.auth-dark button[type="submit"],
+.auth-dark button[class*="bg-[#155DFC]"],
+html:not(.dark) .auth-dark button,
+html:not(.dark) .auth-dark button[type="submit"],
+html:not(.dark) .auth-dark button[class*="bg-[#155DFC]"],
+html.dark .auth-dark button,
+html.dark .auth-dark button[type="submit"],
+html.dark .auth-dark button[class*="bg-[#155DFC]"] {
+  box-shadow: none !important;
+  filter: none !important;
+  transform: none !important;
+  outline: none !important;
+}
+
+.auth-dark button[class*="bg-[#155DFC]"]:hover,
+html:not(.dark) .auth-dark button[class*="bg-[#155DFC]"]:hover,
+html.dark .auth-dark button[class*="bg-[#155DFC]"]:hover {
+  background-color: #1447E6 !important;
+  box-shadow: none !important;
+}
+/* ==========================================================================
+   HIGH-PREMIUM OBSIDIAN DARK THEME DESIGN SYSTEM ENHANCEMENTS
+   (Triggers automatically when document root HAS the .dark class)
+   ========================================================================== */
+html.dark {
+  color-scheme: dark !important;
+  /* Ultra-Deep Obsidian Background */
+  body, html, [class*="bg-[#0b0b0b]"] {
+    background-color: #08090d !important;
+    color: #f8fafc !important;
+    color-scheme: dark !important;
+  }
+
+  /* Sleek Sidebar with Ambient Edge Glow */
+  aside, [class*="bg-[#0f0f0f]"] {
+    background-color: #0c0d14 !important;
+    border-right: 1px solid rgba(255, 255, 255, 0.07) !important;
+    box-shadow: 8px 0 30px -8px rgba(0, 0, 0, 0.5) !important;
+  }
+
+  /* Cards, Panels & Widgets — Obsidian Glass Depth (Excluding Auth Forms) */
+  div[data-slot="card"]:not(.auth-dark *), [class*="bg-[#111111]"]:not(.auth-dark *) {
+    background-color: rgba(15, 17, 26, 0.9) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.5), 0 0 20px -5px rgba(59, 130, 246, 0.02) !important;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  }
+
+  div[data-slot="card"]:not(.auth-dark *):hover, [class*="bg-[#111111]"]:not(.auth-dark *):hover {
+    border-color: rgba(255, 255, 255, 0.15) !important;
+    box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.6), 0 0 25px -4px rgba(59, 130, 246, 0.05) !important;
+  }
+
+  /* Card Rows, List Items & History Logs */
+  div[class*="bg-black/20"], div[class*="bg-black/10"] {
+    background-color: rgba(20, 23, 35, 0.7) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.3) !important;
+    transition: all 0.2s ease !important;
+  }
+
+  div[class*="bg-black/20"]:hover {
+    background-color: rgba(27, 31, 48, 0.9) !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    box-shadow: 0 8px 20px -4px rgba(0, 0, 0, 0.5) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  /* Sidebar Links in Dark Mode */
+  aside nav a.inactive-tab {
+    background-color: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.06) !important;
+    color: #94a3b8 !important;
+  }
+
+  aside nav a.inactive-tab:hover {
+    background-color: rgba(255, 255, 255, 0.07) !important;
+    color: #f8fafc !important;
+    border-color: rgba(255, 255, 255, 0.14) !important;
+    transform: translateY(-1px) !important;
+  }
+
+  aside nav a.active-tab {
+    background-color: #1e293b !important;
+    color: #ffffff !important;
+    border: 1px solid rgba(59, 130, 246, 0.5) !important;
+    box-shadow: 0 4px 16px -2px rgba(37, 99, 235, 0.35) !important;
+  }
+
+  /* Form Inputs in Dark Mode */
+  input, select, textarea {
+    background-color: rgba(14, 16, 25, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    color: #f8fafc !important;
+    caret-color: #ffffff !important;
+    color-scheme: dark !important;
+  }
+
+  input:focus, select:focus, textarea:focus {
+    border-color: #3b82f6 !important;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2) !important;
+  }
+
+  /* Vibrant Currency Colors for Dark Mode */
+  .text-emerald-400 {
+    color: #34d399 !important; /* Emerald 400 */
+  }
+  .text-rose-400 {
+    color: #fb7185 !important; /* Rose 400 */
+  }
+  .text-blue-400 {
+    color: #60a5fa !important; /* Blue 400 */
+  }
+  .text-amber-400 {
+    color: #fbbf24 !important; /* Amber 400 */
+  }
+  .text-violet-400 {
+    color: #c084fc !important; /* Violet 400 */
+  }
+}
+
+/* ==========================================================================
+   HIGH-PREMIUM LIGHT THEME DESIGN SYSTEM OVERRIDES
+   (Triggers automatically when document root does NOT have the .dark class)
+   ========================================================================== */
+html:not(.dark) {
+  color-scheme: light !important;
+  /* Page & Core Layout Backgrounds */
+  body, html, [class*="bg-[#0b0b0b]"] {
+    background-color: #f2f8ff !important;
+    color: #0f172a !important;
+    color-scheme: light !important;
+  }
+  
+  /* Desktop & Mobile Sidebar — Aesthetic Soft Ice Blue Pair */
+  aside, [class*="bg-[#0f0f0f]"] {
+    background-color: #ffffff !important;
+    border-right: 1px solid rgba(191, 219, 254, 0.6) !important;
+    color: #0f172a !important;
+    box-shadow: 6px 0 24px -6px rgba(37, 99, 235, 0.07) !important;
+  }
+  
+  /* All Cards, Panels, Containers & Widgets — Permanent 3D, Border-Only Hover */
+  div[data-slot="card"], [class*="bg-[#111111]"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(191, 219, 254, 0.6) !important;
+    color: #0f172a !important;
+    box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05), 0 12px 28px -6px rgba(37, 99, 235, 0.1), inset 0 1px 0 0 rgba(255,255,255,1) !important;
+  }
+
+  div[data-slot="card"]:hover, [class*="bg-[#111111]"]:hover {
+    border-color: rgba(147, 197, 253, 0.9) !important;
+  }
+
+  /* User Profile Extension Popover Menu & Text Visibility */
+  div[class*="bg-[#141414]"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(191, 219, 254, 0.6) !important;
+    color: #0f172a !important;
+    box-shadow: 0 20px 35px -5px rgba(37, 99, 235, 0.12), 0 8px 16px -4px rgba(15, 23, 42, 0.06) !important;
+  }
+  div[class*="bg-[#141414]"] button {
+    color: #0f172a !important;
+  }
+  div[class*="bg-[#141414]"] button:hover {
+    background-color: #f0f6ff !important;
+  }
+  div[class*="bg-[#141414]"] button.bg-rose-500\/10 {
+    background-color: rgba(244, 63, 94, 0.1) !important;
+    color: #e11d48 !important;
+  }
+
+  /* Headings & High-Contrast Titles */
+  h1, h2, h3, h4, h5, h6, .font-bold, .font-semibold, .text-white, .text-zinc-200 {
+    color: #0f172a !important;
+  }
+
+  /* Secondary Labels & Subtitles */
+  .text-white\/70, .text-white\/55, .text-white\/50, .text-white\/45, .text-zinc-400, .text-zinc-300 {
+    color: #475569 !important;
+  }
+
+  /* Borders */
+  [class*="border-white/10"], [class*="border-white/15"], [class*="border-[#262626]"] {
+    border-color: rgba(191, 219, 254, 0.6) !important;
+  }
+
+  /* Card Rows, List Items & History Logs — Permanent 3D, Border-Only Hover */
+  div[class*="bg-black/20"], div[class*="bg-black/10"] {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(191, 219, 254, 0.55) !important;
+    box-shadow: 0 2px 4px -1px rgba(15, 23, 42, 0.04), 0 6px 16px -4px rgba(37, 99, 235, 0.07), inset 0 1px 0 rgba(255,255,255,0.9) !important;
+  }
+  div[class*="bg-black/20"]:hover {
+    border-color: rgba(147, 197, 253, 0.9) !important;
+  }
+
+  /* Icon Circle Containers in Lists -> Soft Blue Background */
+  div[class*="bg-[#262626]"], div[class*="bg-zinc-800"] {
+    background-color: #f0f6ff !important;
+    border-color: rgba(191, 219, 254, 0.6) !important;
+  }
+
+  /* Table Rows & Cells -> Clean Pure White / Transparent Backgrounds */
+  table, tbody, tr, td, th {
+    background-color: transparent !important;
+    background: transparent !important;
+    border-color: rgba(191, 219, 254, 0.5) !important;
+    color: #0f172a !important;
+  }
+  tbody tr:hover {
+    background-color: rgba(37, 99, 235, 0.03) !important;
+  }
+
+  /* Primary Action Buttons (Blue/Submit Buttons) -> 3D Lift Shadow (Excluding Auth Forms) */
+  button.bg-blue-600:not(.auth-dark *), button.bg-blue-500:not(.auth-dark *), button[type="submit"]:not(.auth-dark *) {
+    color: #ffffff !important;
+    background-color: #2563eb !important;
+    box-shadow: 0 8px 22px -3px rgba(37, 99, 235, 0.4), 0 2px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    transition: all 0.2s ease !important;
+  }
+  button.bg-blue-600:not(.auth-dark *):hover, button.bg-blue-500:not(.auth-dark *):hover, button[type="submit"]:not(.auth-dark *):hover {
+    box-shadow: 0 12px 28px -3px rgba(37, 99, 235, 0.5), 0 4px 10px -1px rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-1px) !important;
+  }
+  button.bg-blue-600:not(.auth-dark *) *, button.bg-blue-500:not(.auth-dark *) *, button[type="submit"]:not(.auth-dark *) * {
+    color: #ffffff !important;
+  }
+
+  /* Soft Tint Icon Containers (Stat Badges) */
+  [class*="bg-blue-500/10"], [class*="bg-blue-600/10"] {
+    background-color: rgba(37, 99, 235, 0.1) !important;
+    color: #2563eb !important;
+  }
+  [class*="bg-blue-500/10"] *, [class*="bg-blue-600/10"] * {
+    color: #2563eb !important;
+  }
+
+  [class*="bg-violet-500/10"], [class*="bg-violet-600/10"] {
+    background-color: rgba(124, 58, 237, 0.1) !important;
+    color: #7c3aed !important;
+  }
+  [class*="bg-violet-500/10"] *, [class*="bg-violet-600/10"] * {
+    color: #7c3aed !important;
+  }
+
+  [class*="bg-purple-500/10"], [class*="bg-purple-600/10"] {
+    background-color: rgba(147, 51, 234, 0.1) !important;
+    color: #9333ea !important;
+  }
+  [class*="bg-purple-500/10"] *, [class*="bg-purple-600/10"] * {
+    color: #9333ea !important;
+  }
+
+  [class*="bg-emerald-500/10"], [class*="bg-emerald-600/10"] {
+    background-color: rgba(16, 185, 129, 0.1) !important;
+    color: #059669 !important;
+  }
+  [class*="bg-emerald-500/10"] *, [class*="bg-emerald-600/10"] * {
+    color: #059669 !important;
+  }
+
+  [class*="bg-rose-500/10"], [class*="bg-rose-600/10"] {
+    background-color: rgba(244, 63, 94, 0.1) !important;
+    color: #e11d48 !important;
+  }
+  [class*="bg-rose-500/10"] *, [class*="bg-rose-600/10"] * {
+    color: #e11d48 !important;
+  }
+
+  /* Unselected Toggle Buttons in Forms (DebtForm & TransactionForm) */
+  button[class*="bg-black/20"] {
+    background-color: #ffffff !important;
+    border-color: rgba(191, 219, 254, 0.6) !important;
+    color: #475569 !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.04) !important;
+  }
+  button[class*="bg-black/20"]:hover {
+    background-color: #f8fafc !important;
+    color: #0f172a !important;
+    border-color: rgba(147, 197, 253, 0.8) !important;
+    box-shadow: 0 4px 10px rgba(37, 99, 235, 0.08) !important;
+  }
+
+  /* Selected Toggle Buttons (Emerald & Rose) */
+  button[class*="bg-emerald-500/10"] {
+    background-color: #ecfdf5 !important;
+    border-color: rgba(16, 185, 129, 0.3) !important;
+    color: #059669 !important;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15) !important;
+  }
+  button[class*="bg-rose-500/10"] {
+    background-color: #fff1f2 !important;
+    border-color: rgba(244, 63, 94, 0.3) !important;
+    color: #e11d48 !important;
+    box-shadow: 0 4px 12px rgba(244, 63, 94, 0.15) !important;
+  }
+
+  /* Vibrant & Calibrated Text Colors for Light Mode */
+  .text-emerald-400, .text-emerald-500 {
+    color: #059669 !important; /* Emerald 600 */
+  }
+  .text-rose-400, .text-rose-500 {
+    color: #e11d48 !important; /* Rose 600 */
+  }
+  .text-blue-400, .text-blue-500 {
+    color: #2563eb !important; /* Blue 600 */
+  }
+  .text-amber-400, .text-amber-500 {
+    color: #d97706 !important; /* Amber 600 */
+  }
+  .text-violet-400, .text-violet-500 {
+    color: #7c3aed !important; /* Violet 600 */
+  }
+  .text-purple-400, .text-purple-500 {
+    color: #9333ea !important; /* Purple 600 */
+  }
+  .text-indigo-400, .text-indigo-500 {
+    color: #4f46e5 !important; /* Indigo 600 */
+  }
+  .text-teal-400, .text-teal-500 {
+    color: #0d9488 !important; /* Teal 600 */
+  }
+  .text-sky-400, .text-sky-500 {
+    color: #0284c7 !important; /* Sky 600 */
+  }
+
+  /* Sidebar Links: Inactive soft ice blue (#eaf2fd); Hover #dbeafe; Active solid slate (#0f172a) */
+  aside nav a.inactive-tab {
+    border: 1px solid rgba(191, 219, 254, 0.6) !important;
+    background-color: #eaf2fd !important;
+    color: #334155 !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.04) !important;
+  }
+  aside nav a.inactive-tab:hover {
+    background-color: #dbeafe !important;
+    color: #1e3a8a !important;
+    border-color: rgba(147, 197, 253, 0.8) !important;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.12) !important;
+    transform: translateY(-1px) !important;
+  }
+  aside nav a.inactive-tab:hover * {
+    color: #1e3a8a !important;
+  }
+  aside nav a.active-tab {
+    background-color: #0f172a !important;
+    color: #ffffff !important;
+    border-color: #0f172a !important;
+    box-shadow: 0 6px 16px -2px rgba(15, 23, 42, 0.35) !important;
+  }
+  aside nav a.active-tab * {
+    color: #ffffff !important;
+  }
+
+  /* Form Inputs, Selects & Textareas -> 3D Inset Shadow */
+  input, select, textarea, button[role="combobox"], [data-slot="select-trigger"] {
+    color: #0f172a !important;
+    background-color: #ffffff !important;
+    border: 1px solid rgba(147, 197, 253, 0.7) !important;
+    box-shadow: inset 0 2px 4px 0 rgba(37, 99, 235, 0.04), 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+    filter: none !important;
+    caret-color: #0f172a !important;
+    color-scheme: light !important;
+  }
+  input::-webkit-calendar-picker-indicator {
+    filter: none !important;
+    color-scheme: light !important;
+    cursor: pointer;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: #2563eb !important;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15), inset 0 1px 2px 0 rgba(0, 0, 0, 0.02) !important;
+  }
+  input::placeholder {
+    color: #64748b !important;
+  }
+  select option {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+  }
+
+  /* Badges & Quick View Boxes */
+  .bg-zinc-800, div.rounded-3xl[class*="bg-white/5"] {
+    background-color: #eaf2fd !important;
+    color: #0f172a !important;
+    border: 1px solid rgba(191, 219, 254, 0.6) !important;
+    box-shadow: 0 2px 6px rgba(37, 99, 235, 0.05) !important;
+  }
+
+  /* Recharts Charts Overrides: Clean Grid Lines & Axis Typography */
+  .recharts-cartesian-grid line {
+    stroke: rgba(191, 219, 254, 0.6) !important;
+  }
+  .recharts-text, .recharts-cartesian-axis-tick-value {
+    fill: #475569 !important;
+  }
+  .recharts-default-tooltip {
+    background-color: #ffffff !important;
+    border: 1px solid rgba(191, 219, 254, 0.7) !important;
+    color: #0f172a !important;
+    border-radius: 0.75rem !important;
+    box-shadow: 0 10px 25px rgba(37, 99, 235, 0.12) !important;
+  }
+
+  /* Scrollbars in Light Mode */
+  ::-webkit-scrollbar-track {
+    background: #f2f8ff !important;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #bfdbfe !important;
+    border: 2px solid #f2f8ff !important;
+  }
+  * {
+    scrollbar-color: #bfdbfe #f2f8ff !important;
+  }
 }

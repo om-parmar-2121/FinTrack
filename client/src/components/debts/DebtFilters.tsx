@@ -86,6 +86,7 @@ export const DebtFilters: FC<DebtFiltersProps> = ({
                   <>
                     <option className="bg-[#151515] text-white" value="">All Statuses</option>
                     <option className="bg-[#151515] text-white" value="pending">Pending</option>
+                    <option className="bg-[#151515] text-white" value="partial">Partial</option>
                     <option className="bg-[#151515] text-white" value="paid">Paid</option>
                     <option className="bg-[#151515] text-white" value="overdue">Overdue</option>
                   </>

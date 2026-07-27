@@ -4,7 +4,7 @@ import TextType from "../components/TextType";
 
 const Signup = () => {
   return (
-    <div className="relative min-h-screen overflow-hidden bg-black">
+    <div className="auth-dark relative min-h-screen overflow-hidden bg-black">
 
       {/* Background */}
       <div className="absolute inset-0 z-0 opacity-40">

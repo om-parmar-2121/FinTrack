@@ -77,12 +77,7 @@ const Analytics: FC = () => {
             </p>
           </div>
           <div className="flex items-center gap-2 self-start sm:self-auto">
-            {user?.name && (
-              <Badge variant="secondary" className="px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
-                {user.name}
-              </Badge>
-            )}
-            <Badge variant="secondary" className="hidden sm:inline-flex w-fit px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
+            <Badge variant="secondary" className="px-3 py-1 text-xs font-semibold bg-zinc-800 text-zinc-200 border border-zinc-700">
               {`${formattedDate}`}
             </Badge>
           </div>

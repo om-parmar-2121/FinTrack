@@ -7,32 +7,36 @@ export interface DebtFilters {
   due?: string;
 }
 
+const mapDebtItem = (item: any): DebtItem => {
+  const isOverdue = item.status === "pending" && new Date(item.deadline) < new Date();
+  return {
+    _id: item._id,
+    person: item.personName,
+    type: item.type,
+    amount: item.amount,
+    paidAmount: item.paidAmount ?? 0,
+    dueDate: item.deadline,
+    note: item.note || "",
+    status: isOverdue ? "overdue" : item.status,
+    payments: (item.payments || []).map((p: any) => ({
+      _id: p._id,
+      amount: p.amount,
+      note: p.note || "",
+      date: p.date,
+    })),
+  };
+};
+
 export const debtService = {
   getDebts: async (filters?: DebtFilters): Promise<{ success: boolean; data: DebtItem[] }> => {
-    // If the filter status is overdue, pass it as 'due: "overdue"' and omit status
     const params: DebtFilters = { ...filters };
     if (params.status === "overdue") {
       params.due = "overdue";
       delete params.status;
     }
 
-    const response = await api.get<{ success: boolean; data: any[] }>("/debts", {
-      params,
-    });
-
-    // Map backend array to match client-side DebtItem
-    const mappedData = (response.data.data || []).map((item: any): DebtItem => {
-      const isOverdue = item.status === "pending" && new Date(item.deadline) < new Date();
-      return {
-        _id: item._id,
-        person: item.personName,
-        type: item.type,
-        amount: item.amount,
-        dueDate: item.deadline,
-        note: item.note || "",
-        status: isOverdue ? "overdue" : item.status,
-      };
-    });
+    const response = await api.get<{ success: boolean; data: any[] }>("/debts", { params });
+    const mappedData = (response.data.data || []).map(mapDebtItem);
 
     return {
       success: response.data.success,
@@ -40,8 +44,7 @@ export const debtService = {
     };
   },
 
-  addDebt: async (data: Omit<DebtItem, "_id" | "status">): Promise<{ success: boolean; data: DebtItem }> => {
-    // Map frontend fields to backend schema (person -> personName, dueDate -> deadline)
+  addDebt: async (data: Omit<DebtItem, "_id" | "status" | "paidAmount" | "payments">): Promise<{ success: boolean; data: DebtItem }> => {
     const payload = {
       personName: data.person,
       type: data.type,
@@ -51,43 +54,28 @@ export const debtService = {
     };
 
     const response = await api.post<{ success: boolean; data: any }>("/debts", payload);
-    const item = response.data.data;
-    
-    // Map the returned item back to DebtItem format
-    const isOverdue = item.status === "pending" && new Date(item.deadline) < new Date();
-    const mappedDebt: DebtItem = {
-      _id: item._id,
-      person: item.personName,
-      type: item.type,
-      amount: item.amount,
-      dueDate: item.deadline,
-      note: item.note || "",
-      status: isOverdue ? "overdue" : item.status,
-    };
-
     return {
       success: response.data.success,
-      data: mappedDebt,
+      data: mapDebtItem(response.data.data),
+    };
+  },
+
+  logPayment: async (id: string, amount: number, note?: string): Promise<{ success: boolean; data: DebtItem }> => {
+    const response = await api.post<{ success: boolean; data: any }>(`/debts/${id}/payments`, {
+      amount,
+      note: note || "",
+    });
+    return {
+      success: response.data.success,
+      data: mapDebtItem(response.data.data),
     };
   },
 
   markAsPaid: async (id: string): Promise<{ success: boolean; data: DebtItem }> => {
     const response = await api.patch<{ success: boolean; data: any }>(`/debts/${id}/pay`);
-    const item = response.data.data;
-
-    const mappedDebt: DebtItem = {
-      _id: item._id,
-      person: item.personName,
-      type: item.type,
-      amount: item.amount,
-      dueDate: item.deadline,
-      note: item.note || "",
-      status: item.status,
-    };
-
     return {
       success: response.data.success,
-      data: mappedDebt,
+      data: mapDebtItem(response.data.data),
     };
   },
 

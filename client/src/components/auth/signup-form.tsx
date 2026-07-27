@@ -4,7 +4,6 @@ import { cn } from "../../lib/utils";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "../ui/button";
 import authService from "../../services/auth.service";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../ui/card";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { AlertCircle } from "lucide-react";
@@ -107,172 +106,136 @@ export const SignupForm: FC<SignupFormProps> = React.memo(({
   }
 
   return (
-    <div
-      className={cn("w-full", className)}
-      {...props}
-    >
-      <Card className="bg-[#111111]/95 backdrop-blur-xl border border-[#262626] text-white shadow-2xl rounded-2xl">
-        <CardHeader className="space-y-1 px-5 pt-5 sm:px-6 sm:pt-6">
-          <CardTitle className="text-xl sm:text-2xl font-bold">
-            Create your account
-          </CardTitle>
+    <div className={cn("flex flex-col gap-2 w-full", className)} {...props}>
+      <div className="bg-[#111111]/95 backdrop-blur-xl border border-[#262626] text-white shadow-2xl rounded-2xl p-5 sm:p-7 space-y-4">
+        <div className="space-y-2 text-center lg:text-left">
+          <h2 className="text-xl sm:text-2xl font-bold tracking-tight">Create your account</h2>
+          <p className="text-zinc-400 text-sm">Enter your details below to create your account</p>
+        </div>
 
-          <CardDescription className="text-zinc-400 text-sm">
-            Enter your details below to create your account
-          </CardDescription>
-        </CardHeader>
-
-        <CardContent className="px-5 pb-5 sm:px-6 sm:pb-6">
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-5"
-          >
-            {error && (
-              <div className="flex items-start gap-2.5 p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-200 animate-in fade-in slide-in-from-top-1 duration-200">
-                <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
-                <div className="flex-1 font-medium leading-relaxed">
-                  {error}
-                </div>
+        <form onSubmit={handleSubmit} className="space-y-3">
+          {error && (
+            <div className="flex items-start gap-2.5 p-3.5 bg-rose-500/10 border border-rose-500/20 rounded-xl text-xs text-rose-200 animate-in fade-in slide-in-from-top-1 duration-200">
+              <AlertCircle className="h-4 w-4 text-rose-400 shrink-0 mt-0.5" />
+              <div className="flex-1 font-medium leading-relaxed">
+                {error}
               </div>
-            )}
-
-            {/* Full Name */}
-            <div>
-              <Label
-                htmlFor="name"
-                className="block mb-2 text-sm font-medium text-zinc-200"
-              > Full Name </Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={handleChange}
-                placeholder="John Doe"
-                required
-                className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
-              />
             </div>
+          )}
 
-            {/* Email */}
-            <div>
-              <Label
-                htmlFor="email"
-                className="block mb-2 text-sm font-medium text-zinc-200"
-              > Email </Label>
+          {/* Full Name */}
+          <div className="space-y-1.5">
+            <Label htmlFor="name" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Full Name</Label>
+            <Input
+              id="name"
+              type="text"
+              value={formData.name}
+              onChange={handleChange}
+              placeholder="John Doe"
+              required
+              className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500 rounded-xl"
+            />
+          </div>
 
-              <Input
-                id="email"
-                type="email"
-                value={formData.email}
-                onChange={handleChange}
-                placeholder="hello@example.com"
-                required
-                className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
-              />
-            </div>
+          {/* Email */}
+          <div className="space-y-1.5">
+            <Label htmlFor="email" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              value={formData.email}
+              onChange={handleChange}
+              placeholder="hello@example.com"
+              required
+              className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500 rounded-xl"
+            />
+          </div>
 
-            {/* Password */}
-            <div>
-              <Label
-                htmlFor="password"
-                className="block mb-2 text-sm font-medium text-zinc-200"
-              > Password </Label>
+          {/* Password */}
+          <div className="space-y-1.5">
+            <Label htmlFor="password" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={formData.password}
+              onChange={handleChange}
+              placeholder="••••••••"
+              required
+              className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500 rounded-xl"
+            />
+          </div>
 
-              <Input
-                id="password"
-                type="password"
-                value={formData.password}
-                onChange={handleChange}
-                placeholder="••••••••"
-                required
-                className="h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
-              />
-            </div>
-
-            {/* Budget + Goal */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {/* Starting Balance */}
-              <div>
-                <Label
-                  htmlFor="startingBalance"
-                  className="block mb-2 text-sm font-medium text-zinc-200"
-                > Starting Balance </Label>
-
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"> ₹ </span>
-                  <Input
-                    id="startingBalance"
-                    type="number"
-                    value={formData.startingBalance}
-                    onChange={handleChange}
-                    placeholder="50000"
-                    required
-                    className="pl-8 h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
-                  />
-                </div>
-              </div>
-
-              {/* Saving Goal */}
-              <div>
-                <Label
-                  htmlFor="savingGoal"
-                  className="block mb-2 text-sm font medium text-zinc-200"
-                > Saving Goal </Label>
-
-                <div className="relative">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400"> ₹ </span>
-                  <Input
-                    id="savingGoal"
-                    type="number"
-                    value={formData.savingGoal}
-                    onChange={handleChange}
-                    placeholder="10000"
-                    required
-                    className="pl-8 h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500"
-                  />
-                </div>
+          {/* Budget + Goal */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Starting Balance */}
+            <div className="space-y-1.5">
+              <Label htmlFor="startingBalance" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Starting Balance</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">₹</span>
+                <Input
+                  id="startingBalance"
+                  type="number"
+                  value={formData.startingBalance}
+                  onChange={handleChange}
+                  placeholder="50000"
+                  required
+                  className="pl-8 h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500 rounded-xl"
+                />
               </div>
             </div>
 
-            {/* Submit Button */}
-            <div className="flex flex-col gap-3 pt-2">
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="w-full h-10 sm:h-11 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/10"
-              >
-                {isLoading ? "Creating Account..." : "Create Account"}
-              </Button>
-
-              <div className="relative flex items-center justify-center py-1">
-                <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-white/10" />
-                </div>
-                <span className="relative px-3 bg-[#111111] text-xs font-semibold uppercase tracking-widest text-zinc-500">
-                  Or
-                </span>
+            {/* Saving Goal */}
+            <div className="space-y-1.5">
+              <Label htmlFor="savingGoal" className="text-xs font-semibold uppercase tracking-wider text-zinc-400">Saving Goal</Label>
+              <div className="relative">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-sm">₹</span>
+                <Input
+                  id="savingGoal"
+                  type="number"
+                  value={formData.savingGoal}
+                  onChange={handleChange}
+                  placeholder="10000"
+                  required
+                  className="pl-8 h-10 sm:h-11 bg-[#181818] border-[#2a2a2a] text-white placeholder:text-zinc-500 rounded-xl"
+                />
               </div>
-
-              <Button
-                type="button"
-                onClick={() => loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } })}
-                className="w-full h-10 sm:h-11 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-sm font-medium rounded-xl transition-all duration-200 flex items-center justify-center gap-2 cursor-pointer"
-              >
-                <img src="/GoogleLogo.png" alt="google logo" className="h-5 w-5 object-contain" />
-                <span>Continue with Google</span>
-              </Button>
-
-              <p className="text-center text-zinc-400 text-sm mt-1">
-                Already have an account?{" "}
-                <Link
-                  to="/"
-                  className="text-blue-500 hover:text-white! transition-colors duration-200 no-underline!"
-                > Sign in </Link>
-              </p>
             </div>
-          </form>
-        </CardContent>
-      </Card>
+          </div>
+
+          {/* Submit Button */}
+          <div className="flex flex-col gap-3 pt-2">
+            <Button
+              type="submit"
+              disabled={isLoading}
+              className="w-full h-10 sm:h-11 bg-[#155DFC] hover:bg-[#1447E6] text-white text-sm font-medium rounded-xl shadow-none cursor-pointer"
+            >
+              {isLoading ? "Creating Account..." : "Create Account"}
+            </Button>
+
+            <div className="flex items-center gap-3 py-1">
+              <div className="flex-1 border-t border-white/10" />
+              <span className="text-xs font-semibold uppercase tracking-widest text-zinc-500">
+                Or
+              </span>
+              <div className="flex-1 border-t border-white/10" />
+            </div>
+
+            <Button
+              type="button"
+              onClick={() => loginWithRedirect({ authorizationParams: { connection: "google-oauth2" } })}
+              className="w-full h-10 sm:h-11 bg-white/5 border border-white/10 text-white text-sm font-medium rounded-xl flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <img src="/GoogleLogo.png" alt="google logo" className="h-5 w-5 object-contain" />
+              <span>Continue with Google</span>
+            </Button>
+
+            <div className="text-center text-zinc-400 text-sm mt-1">
+              Already have an account?{" "}
+              <Link to="/" className="text-blue-500 hover:text-white! transition-colors duration-200 no-underline!">Sign in</Link>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   );
 });
