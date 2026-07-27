@@ -5,6 +5,7 @@ import { StatCard } from "../components/dashboard/StatCard";
 import { MonthlyLineChart } from "../components/analytics/MonthlyLineChart";
 import { CategoryBreakdownCard } from "../components/analytics/CategoryBreakdownCard";
 import { WeeklyBarChart } from "../components/analytics/WeeklyBarChart";
+import { ArrowUpRight, ArrowDownRight, Flame } from "lucide-react";
 import {
   monthlyAnalyticsSelector,
   transactionsByCategorySelector,

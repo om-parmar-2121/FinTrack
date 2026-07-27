@@ -1,4 +1,4 @@
-import type { FC } from "react";
+import type { FC, ReactNode } from "react";
 import { useEffect, useState, lazy, Suspense } from "react";
 import { Route, Routes, useNavigate, useLocation, Navigate } from "react-router-dom";
 import AppShell from "./components/layout/AppShell";
@@ -18,14 +18,14 @@ const Transactions = lazy(() => import("./pages/Transactions"));
 const Debts = lazy(() => import("./pages/Debts"));
 const Setup = lazy(() => import("./pages/Setup"));
 
-const ProtectedRoute = ({ children, isAuthenticated }: { children: React.ReactNode; isAuthenticated: boolean }) => {
+const ProtectedRoute = ({ children, isAuthenticated }: { children: ReactNode; isAuthenticated: boolean }) => {
   if (!isAuthenticated) {
     return <Navigate to="/" replace />;
   }
   return <>{children}</>;
 };
 
-const PublicRoute = ({ children, isAuthenticated }: { children: React.ReactNode; isAuthenticated: boolean }) => {
+const PublicRoute = ({ children, isAuthenticated }: { children: ReactNode; isAuthenticated: boolean }) => {
   if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }

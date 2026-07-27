@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FC } from "react";
-import { X, Loader2, IndianRupee, StickyNote, CheckCircle2 } from "lucide-react";
+import { X, CreditCard, Loader2, IndianRupee, StickyNote, CheckCircle2 } from "lucide-react";
 import type { DebtItem } from "./types";
 
 interface LogPaymentModalProps {

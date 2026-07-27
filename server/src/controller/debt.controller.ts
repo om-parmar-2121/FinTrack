@@ -1,10 +1,9 @@
-import { mongo } from "mongoose";
+import mongoose from "mongoose";
 import Debt from "../models/debt.model.js";
 import Transaction from "../models/transaction.model.js";
 import { asyncHandler } from "../utils/asyncHandler.utils.js";
 import { errorHandler } from "../utils/errorHandler.utils.js";
 import { NextFunction, Request, Response } from "express";
-import mongoose from "mongoose";
 
 export const addDebt = asyncHandler(async (
 	req: Request,
