@@ -107,7 +107,6 @@ export const DebtFilters: FC<DebtFiltersProps> = ({
                 type="date"
                 value={dueDate}
                 onChange={(e) => onDueDateChange(e.target.value)}
-                style={{ colorScheme: "dark" }}
                 className="w-full pl-8 pr-2 py-1 h-8 bg-black/20 border border-white/10 rounded-lg text-xs text-white focus:outline-none focus:border-blue-500/50 cursor-pointer [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
               />
             </div>

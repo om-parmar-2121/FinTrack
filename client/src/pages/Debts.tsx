@@ -6,11 +6,10 @@ import { DebtStats } from "../components/debts/DebtStats";
 import { DebtForm } from "../components/debts/DebtForm";
 import { DebtFilters } from "../components/debts/DebtFilters";
 import { DebtHistory } from "../components/debts/DebtHistory";
-import { userState, debtsState } from "../recoil/atoms";
+import { debtsState } from "../recoil/atoms";
 import { debtSummarySelector } from "../recoil/selectors";
 
 const Debts: FC = () => {
-  const user = useRecoilValue(userState);
   const date: Date = new Date();
   const options: Intl.DateTimeFormatOptions = {
     day: '2-digit',

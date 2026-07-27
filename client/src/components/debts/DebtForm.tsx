@@ -178,7 +178,6 @@ export const DebtForm: FC<DebtFormProps> = ({ onSuccess }) => {
                   disabled={isSubmitting}
                   value={dueDate}
                   onChange={(e) => setDueDate(e.target.value)}
-                  style={{ colorScheme: "dark" }}
                   className="pl-9 pr-3 h-9 bg-black/20 border-white/10 text-white focus:border-blue-500/50 cursor-pointer [&::-webkit-calendar-picker-indicator]:absolute [&::-webkit-calendar-picker-indicator]:inset-0 [&::-webkit-calendar-picker-indicator]:w-full [&::-webkit-calendar-picker-indicator]:h-full [&::-webkit-calendar-picker-indicator]:opacity-0 [&::-webkit-calendar-picker-indicator]:cursor-pointer"
                   required
                 />

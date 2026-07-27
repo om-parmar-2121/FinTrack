@@ -6,11 +6,10 @@ import { TransactionForm } from "../components/transactions/TransactionForm";
 import { TransactionFilters } from "../components/transactions/TransactionFilters";
 import { TransactionHistory } from "../components/transactions/TransactionHistory";
 import { TransactionStats } from "../components/transactions/TransactionStats";
-import { userState, transactionsState } from "../recoil/atoms";
+import { transactionsState } from "../recoil/atoms";
 import { transactionsSummarySelector } from "../recoil/selectors";
 
 const Transactions: FC = () => {
-  const user = useRecoilValue(userState);
   const date: Date = new Date();
   const options: Intl.DateTimeFormatOptions = {
     day: '2-digit',

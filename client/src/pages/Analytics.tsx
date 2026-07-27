@@ -5,8 +5,6 @@ import { StatCard } from "../components/dashboard/StatCard";
 import { MonthlyLineChart } from "../components/analytics/MonthlyLineChart";
 import { CategoryBreakdownCard } from "../components/analytics/CategoryBreakdownCard";
 import { WeeklyBarChart } from "../components/analytics/WeeklyBarChart";
-import { ArrowUpRight, ArrowDownRight, Flame } from "lucide-react";
-import { userState } from "../recoil/atoms";
 import {
   monthlyAnalyticsSelector,
   transactionsByCategorySelector,
@@ -16,7 +14,6 @@ import {
 } from "../recoil/selectors";
 
 const Analytics: FC = () => {
-  const user = useRecoilValue(userState);
   const monthlyData = useRecoilValue(monthlyAnalyticsSelector);
   const categories = useRecoilValue(transactionsByCategorySelector);
   const highestExpense = useRecoilValue(highestExpenseSelector);

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { FC } from "react";
-import { X, CreditCard, Loader2, IndianRupee, StickyNote, CheckCircle2 } from "lucide-react";
+import { X, Loader2, IndianRupee, StickyNote, CheckCircle2 } from "lucide-react";
 import type { DebtItem } from "./types";
 
 interface LogPaymentModalProps {
@@ -52,7 +52,6 @@ export const LogPaymentModal: FC<LogPaymentModalProps> = ({ debt, onClose, onSuc
   };
 
   const isLent = debt.type === "lent";
-  const accentColor = isLent ? "emerald" : "blue";
   const personInitial = debt.person.charAt(0).toUpperCase();
 
   return (
