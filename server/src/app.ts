@@ -21,6 +21,10 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+app.get("/ping", (_req, res) => {
+  res.status(200).json({ status: "ok", timestamp: new Date().toISOString() });
+});
+
 app.use("/", userRoutes);
 app.use("/transactions", transactionRoutes);
 app.use("/analytics", analyticsRoutes);
