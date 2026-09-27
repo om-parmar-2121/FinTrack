@@ -1,6 +1,12 @@
 import { useState } from "react";
 import type { FC } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../ui/card";
 import { Badge } from "../ui/badge";
 import { Trash2, Check, AlertTriangle, CreditCard } from "lucide-react";
 import type { DebtItem } from "./types";
@@ -26,7 +32,9 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
   const [deleteTargetId, setDeleteTargetId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isMarkingId, setIsMarkingId] = useState<string | null>(null);
-  const [paymentModalDebt, setPaymentModalDebt] = useState<DebtItem | null>(null);
+  const [paymentModalDebt, setPaymentModalDebt] = useState<DebtItem | null>(
+    null,
+  );
   const setDebts = useSetRecoilState(debtsState);
 
   const handleDeleteClick = (id: string) => {
@@ -43,7 +51,7 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
       }
       setDeleteTargetId(null);
       if (onDeleteSuccess) onDeleteSuccess();
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to delete debt entry. Please try again.");
     } finally {
       setIsDeleting(false);
@@ -55,10 +63,10 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
     try {
       const res = await debtService.markAsPaid(id);
       if (res.success) {
-        setDebts((prev) => prev.map((d) => d._id === id ? res.data : d));
+        setDebts((prev) => prev.map((d) => (d._id === id ? res.data : d)));
       }
       if (onPaySuccess) onPaySuccess();
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to mark debt as paid. Please try again.");
     } finally {
       setIsMarkingId(null);
@@ -66,16 +74,23 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
   };
 
   const handlePaymentSuccess = (updatedDebt: DebtItem) => {
-    setDebts((prev) => prev.map((d) => d._id === updatedDebt._id ? updatedDebt : d));
+    setDebts((prev) =>
+      prev.map((d) => (d._id === updatedDebt._id ? updatedDebt : d)),
+    );
     if (onPaySuccess) onPaySuccess();
   };
 
   const getStatusBadge = (d: DebtItem) => {
     const paidAmount = d.paidAmount ?? 0;
-    const progress = d.amount > 0 ? Math.round((paidAmount / d.amount) * 100) : 0;
+    const progress =
+      d.amount > 0 ? Math.round((paidAmount / d.amount) * 100) : 0;
 
     if (d.status === "paid") {
-      return <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Paid</span>;
+      return (
+        <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+          Paid
+        </span>
+      );
     }
     if (d.status === "partial") {
       return (
@@ -85,9 +100,17 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
       );
     }
     if (d.status === "overdue") {
-      return <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse">Overdue</span>;
+      return (
+        <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-rose-500/10 text-rose-400 border border-rose-500/20 animate-pulse">
+          Overdue
+        </span>
+      );
     }
-    return <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">Pending</span>;
+    return (
+      <span className="rounded-full px-2 py-0.5 text-[9px] font-semibold tracking-wide uppercase bg-amber-500/10 text-amber-400 border border-amber-500/20">
+        Pending
+      </span>
+    );
   };
 
   return (
@@ -96,7 +119,9 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
         <CardHeader className="pb-3 flex flex-row items-center justify-between">
           <div>
             <CardTitle className="text-lg">Debt Records</CardTitle>
-            <CardDescription className="text-zinc-400 text-xs">Track payments and remaining balances.</CardDescription>
+            <CardDescription className="text-zinc-400 text-xs">
+              Track payments and remaining balances.
+            </CardDescription>
           </div>
           {!isLoading && (
             <Badge className="bg-zinc-800 border border-zinc-700 text-zinc-300 px-2.5 py-0.5">
@@ -131,7 +156,8 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
               debts.map((d) => {
                 const paidAmount = d.paidAmount ?? 0;
                 const remaining = d.amount - paidAmount;
-                const progress = d.amount > 0 ? Math.round((paidAmount / d.amount) * 100) : 0;
+                const progress =
+                  d.amount > 0 ? Math.round((paidAmount / d.amount) * 100) : 0;
                 const isLent = d.type === "lent";
                 const isPaid = d.status === "paid";
 
@@ -144,23 +170,35 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         {/* Avatar */}
-                        <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold text-sm uppercase ${isLent ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"}`}>
+                        <div
+                          className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl font-bold text-sm uppercase ${isLent ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"}`}
+                        >
                           {d.person.charAt(0)}
                         </div>
 
                         {/* Name + badges + sub-note */}
                         <div>
                           <div className="flex items-center gap-2 flex-wrap">
-                            <p className="font-semibold text-white text-sm">{d.person}</p>
-                            <span className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${isLent ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"}`}>
+                            <p className="font-semibold text-white text-sm">
+                              {d.person}
+                            </p>
+                            <span
+                              className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded-md ${isLent ? "bg-emerald-500/10 text-emerald-400" : "bg-rose-500/10 text-rose-400"}`}
+                            >
                               {d.type}
                             </span>
                             {getStatusBadge(d)}
                           </div>
-                          {d.note && <p className="text-xs text-zinc-500 mt-0.5">{d.note}</p>}
+                          {d.note && (
+                            <p className="text-xs text-zinc-500 mt-0.5">
+                              {d.note}
+                            </p>
+                          )}
                           {paidAmount > 0 && !isPaid && (
                             <p className="text-[11px] text-zinc-400 mt-0.5">
-                              ₹{paidAmount.toLocaleString("en-IN")} paid ({progress}%) · ₹{remaining.toLocaleString("en-IN")} left
+                              ₹{paidAmount.toLocaleString("en-IN")} paid (
+                              {progress}%) · ₹
+                              {remaining.toLocaleString("en-IN")} left
                             </p>
                           )}
                         </div>
@@ -208,11 +246,18 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
 
                         {/* Amount & Due Date (Far Right) */}
                         <div className="text-right">
-                          <p className={`font-bold text-sm whitespace-nowrap ${isLent ? "text-emerald-400" : "text-rose-400"}`}>
-                            {isLent ? "+" : "-"}₹{d.amount.toLocaleString("en-IN")}
+                          <p
+                            className={`font-bold text-sm whitespace-nowrap ${isLent ? "text-emerald-400" : "text-rose-400"}`}
+                          >
+                            {isLent ? "+" : "-"}₹
+                            {d.amount.toLocaleString("en-IN")}
                           </p>
                           <p className="text-[10px] text-zinc-500 font-mono whitespace-nowrap">
-                            Due: {new Date(d.dueDate).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}
+                            Due:{" "}
+                            {new Date(d.dueDate).toLocaleDateString("en-IN", {
+                              day: "numeric",
+                              month: "short",
+                            })}
                           </p>
                         </div>
                       </div>
@@ -249,19 +294,24 @@ export const DebtHistory: FC<DebtHistoryProps> = ({
       {/* Delete Confirmation Modal */}
       {deleteTargetId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="bg-[#121212]/95 border border-white/10 rounded-3xl p-6 max-w-sm w-full space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white">
+          <div className="delete-confirm-modal bg-[#121212]/95 border border-white/10 rounded-3xl p-6 max-w-sm w-full space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-500">
                 <AlertTriangle className="h-5 w-5 animate-pulse" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg text-white">Delete Entry?</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">This action cannot be undone.</p>
+                <h3 className="font-semibold text-lg text-white">
+                  Delete Entry?
+                </h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  This action cannot be undone.
+                </p>
               </div>
             </div>
 
             <p className="text-sm text-zinc-300 leading-relaxed">
-              Are you sure you want to permanently delete this debt record and all its payment history?
+              Are you sure you want to permanently delete this debt record and
+              all its payment history?
             </p>
 
             <div className="flex gap-3 pt-2">

@@ -1,8 +1,23 @@
 import { useState } from "react";
 import type { FC } from "react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../ui/card";
 import { Badge } from "../ui/badge";
-import { Trash2, CircleDollarSign, Coffee, Car, Receipt, ShoppingBag, HelpCircle, AlertTriangle } from "lucide-react";
+import {
+  Trash2,
+  CircleDollarSign,
+  Coffee,
+  Car,
+  Receipt,
+  ShoppingBag,
+  HelpCircle,
+  AlertTriangle,
+} from "lucide-react";
 import type { TransactionItem } from "./types";
 import { Skeleton } from "../ui/skeleton";
 import transactionService from "../../services/transaction.service";
@@ -10,13 +25,19 @@ import { useSetRecoilState } from "recoil";
 import { transactionsState } from "../../recoil/atoms";
 
 const getCategoryIcon = (cat: string, tType: "income" | "expense") => {
-  if (tType === "income") return <CircleDollarSign className="h-4 w-4 text-emerald-400" />;
+  if (tType === "income")
+    return <CircleDollarSign className="h-4 w-4 text-emerald-400" />;
   switch (cat?.toLowerCase()) {
-    case "food": return <Coffee className="h-4 w-4 text-amber-400" />;
-    case "travel": return <Car className="h-4 w-4 text-blue-400" />;
-    case "bills": return <Receipt className="h-4 w-4 text-rose-400" />;
-    case "shopping": return <ShoppingBag className="h-4 w-4 text-violet-400" />;
-    default: return <HelpCircle className="h-4 w-4 text-zinc-400" />;
+    case "food":
+      return <Coffee className="h-4 w-4 text-amber-400" />;
+    case "travel":
+      return <Car className="h-4 w-4 text-blue-400" />;
+    case "bills":
+      return <Receipt className="h-4 w-4 text-rose-400" />;
+    case "shopping":
+      return <ShoppingBag className="h-4 w-4 text-violet-400" />;
+    default:
+      return <HelpCircle className="h-4 w-4 text-zinc-400" />;
   }
 };
 
@@ -49,7 +70,7 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
       }
       setDeleteTargetId(null);
       if (onDeleteSuccess) onDeleteSuccess();
-    } catch (err) {
+    } catch (_err) {
       alert("Failed to delete transaction. Please try again.");
     } finally {
       setIsDeleting(false);
@@ -58,11 +79,18 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
 
   return (
     <>
-      <Card size="sm" className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white shadow-xl shadow-black/25 overflow-hidden lg:flex-1 lg:flex lg:flex-col lg:min-h-0">
+      <Card
+        size="sm"
+        className="bg-[#111111]/90 backdrop-blur-xl border border-[#262626] rounded-2xl text-white shadow-xl shadow-black/25 overflow-hidden lg:flex-1 lg:flex lg:flex-col lg:min-h-0"
+      >
         <CardHeader className="flex flex-row items-center justify-between pb-1.5">
           <div>
-            <CardTitle className="text-sm tracking-tight">History Logs</CardTitle>
-            <CardDescription className="text-zinc-400 text-[10px] leading-tight">Transactions</CardDescription>
+            <CardTitle className="text-sm tracking-tight">
+              History Logs
+            </CardTitle>
+            <CardDescription className="text-zinc-400 text-[10px] leading-tight">
+              Transactions
+            </CardDescription>
           </div>
           {!isLoading && (
             <Badge className="rounded-full bg-zinc-800 border border-zinc-700 text-zinc-300 px-2 py-0.5 text-xs">
@@ -102,14 +130,21 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
                   {/* Title details */}
                   <div className="flex items-center justify-between sm:justify-start gap-3 w-full sm:w-auto">
                     <div className="flex items-center gap-3">
-                      <div className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${t.type === "income" ? "bg-emerald-500/10" : "bg-zinc-800/80"}`}>
+                      <div
+                        className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-xl ${t.type === "income" ? "bg-emerald-500/10" : "bg-zinc-800/80"}`}
+                      >
                         {getCategoryIcon(t.category, t.type)}
                       </div>
                       <div>
                         <div className="flex items-center gap-2 flex-wrap">
-                          <p className="font-medium text-white capitalize text-xs sm:text-sm">{t.category}</p>
+                          <p className="font-medium text-white capitalize text-xs sm:text-sm">
+                            {t.category}
+                          </p>
                           {t.note && (
-                            <span className="text-[11px] sm:text-xs text-zinc-500 max-w-40 sm:max-w-50 truncate" title={t.note}>
+                            <span
+                              className="text-[11px] sm:text-xs text-zinc-500 max-w-40 sm:max-w-50 truncate"
+                              title={t.note}
+                            >
                               ({t.note})
                             </span>
                           )}
@@ -140,8 +175,11 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
                   {/* Actions & Price */}
                   <div className="flex items-center justify-between sm:justify-end gap-4 w-full sm:w-auto pt-2 sm:pt-0 border-t border-white/5 sm:border-t-0">
                     <div className="text-left sm:text-right">
-                      <p className={`font-bold whitespace-nowrap text-xs sm:text-sm ${t.type === "income" ? "text-emerald-400" : "text-rose-400"}`}>
-                        {t.type === "income" ? "+" : "-"}₹{t.amount.toLocaleString("en-IN")}
+                      <p
+                        className={`font-bold whitespace-nowrap text-xs sm:text-sm ${t.type === "income" ? "text-emerald-400" : "text-rose-400"}`}
+                      >
+                        {t.type === "income" ? "+" : "-"}₹
+                        {t.amount.toLocaleString("en-IN")}
                       </p>
                     </div>
 
@@ -167,21 +205,26 @@ export const TransactionHistory: FC<TransactionHistoryProps> = ({
       {/* Delete Confirmation Modal with Backdrop Blur */}
       {deleteTargetId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-md p-4 animate-in fade-in duration-200">
-          <div className="bg-[#121212]/95 border border-white/10 rounded-3xl p-6 max-w-sm w-full space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white">
+          <div className="delete-confirm-modal bg-[#121212]/95 border border-white/10 rounded-3xl p-6 max-w-sm w-full space-y-5 shadow-2xl animate-in zoom-in-95 duration-200 text-white">
             <div className="flex items-center gap-3">
               <div className="p-3 rounded-2xl bg-rose-500/10 text-rose-500">
                 <AlertTriangle className="h-5 w-5 animate-pulse" />
               </div>
               <div>
-                <h3 className="font-semibold text-lg text-white">Delete Entry?</h3>
-                <p className="text-xs text-zinc-400 mt-0.5">This action cannot be undone.</p>
+                <h3 className="font-semibold text-lg text-white">
+                  Delete Entry?
+                </h3>
+                <p className="text-xs text-zinc-400 mt-0.5">
+                  This action cannot be undone.
+                </p>
               </div>
             </div>
-            
+
             <p className="text-sm text-zinc-300 leading-relaxed">
-              Are you sure you want to permanently delete this transaction entry from your logs?
+              Are you sure you want to permanently delete this transaction entry
+              from your logs?
             </p>
-            
+
             <div className="flex gap-3 pt-2">
               <button
                 type="button"
