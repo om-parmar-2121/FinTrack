@@ -43,7 +43,7 @@ export const DebtStats: FC<DebtStatsProps> = ({
         <CardContent className="flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-zinc-400 uppercase tracking-wider">Net Position</p>
-            <h3 className={`text-2xl font-bold mt-1 ${netBalance >= 0 ? "text-blue-400" : "text-amber-400"}`}>
+            <h3 className="text-2xl font-bold mt-1 text-blue-400">
               ₹{netBalance.toLocaleString("en-IN")}
             </h3>
           </div>
